@@ -24,39 +24,15 @@ module.exports = {
     },
 }
 
-~~
-3. storybook 
-npx -p @storybook/cli sb init
-~~
-
-4. feather icon
+3. feather icon
 npm install feather-icons
 
-5. axios
+4. axios
 yarn add axios
 
 
-6. React Router
+5. React Router
 yarn add react-router-dom
 
-~~
-설치 이후 craco.config.js 파일을 다음과 같이 변경
-
-const path = require('path');
-
-module.exports = {
-    babel: {
-        presets: ["@emotion/babel-preset-css-prop"],
-    },
-    webpack: {
-        alias:  {
-            '@components':  path.resolve(__dirname, 'src/components'),
-            '@hooks':  path.resolve(__dirname, 'src/hooks'),
-            '@contexts':  path.resolve(__dirname, 'src/contexts'),
-            '@pages':  path.resolve(__dirname, 'src/pages'),
-        }
-    }
-} 
 
 src/index.js 에서 <App />을 <BrowserRouter></BrowserRouter>로 감싸줌
-~~
