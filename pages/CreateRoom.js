@@ -1,16 +1,23 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import { Spacer } from "../components";
+import { Spacer, Spinner } from "../components";
 import useForm from "../hooks/useForm";
-
+import { useNavigate } from 'react-router-dom';
 const PageWrapper = styled.div`
-    position: absolute;
+`;
+
+const Title = styled.h2`
+    display: block;
+    margin-top: 0px;
+    padding-top: 12px;
+    padding-left: 8px;
 `;
 
 const FormBox = styled.form`
-    position: fixed;
+    position: flex;
     width: 80%;
     margin: 0 10%;
+    padding: 8px 16px;
     background-color: white;
     text-align: center;
     border-radius: 16px;
@@ -58,6 +65,8 @@ const StyledInput = styled.input`
   background-color: #f2f2f2;
   color: #333;
   text-align: center;
+
+  // input date를 위한 css 요소 이후에 다른 형식으로 변경되면 삭제
   ::-webkit-calendar-picker-indicator {
     filter: invert(1);
     margin-right: 0.5rem;
@@ -69,13 +78,10 @@ const ErrorMessage = styled.span`
     color: red;
     
 `;
-const sleep = () => {
-    return new Promise((resolve) => {
-        setTimeout(() => resolve(), 1000);
-    })
-}
 
 export default function CreateRoom() {
+    const navigate = useNavigate();
+
     const { isLoading, errors, handleChange, handleSubmit } = useForm({
         initialState: {
             room_name: '',
@@ -83,20 +89,20 @@ export default function CreateRoom() {
             room_email: ''
         },
         onSubmit: async (values) => {
-            await sleep();
             const postData = JSON.stringify(values);
             try {
-                const data = await axios({
-                    url: 'http://localhost:3000/new-room',
+                const res = await axios({
+                    url: 'http://52.91.127.102:8080/new-room',
                     method: 'post',
                     data: {
                         postData
                     }
                 })
-                console.log(data);
-                if (data) {
-                    JSON.parse(data)
+                if (res) {
+                    const newRoomId = await JSON.parse(res);
+                    navigate(`/GiftRoom/${newRoomId}`);
                 }
+                
 
             } catch (e) {
                 console.error(e);
@@ -112,7 +118,7 @@ export default function CreateRoom() {
     });
     return (
         <PageWrapper>
-            <h2>생일빵: Brithday Postbox</h2>
+            <Title>생일빵: Brithday Postbox</Title>
             <FormBox onSubmit={handleSubmit}>
                 <Spacer type="vertical">
                     <h1>새로운 방 생성하기</h1>
@@ -132,7 +138,7 @@ export default function CreateRoom() {
                         name="room_birthday"
                         type="date"
                         min="1900-01-01"
-                        max={new Date().getDate()}
+                        max={new Date().toISOString().slice(0, 10)}
                         onChange={handleChange}
                         />
                         <ErrorMessage>{errors.room_birthday}</ErrorMessage>
@@ -149,7 +155,7 @@ export default function CreateRoom() {
                         <ErrorMessage>{errors.room_email}</ErrorMessage>
                     </InputContainer>
                     <InputContainer>
-                        <LinkButton type="submit" disabled={isLoading}>{isLoading ? '로딩중...' : '링크 생성하기' }</LinkButton>
+                        <LinkButton type="submit" disabled={isLoading}>{isLoading ? `로딩중...${<Spinner />}` : '링크 생성하기' }</LinkButton>
                     </InputContainer>
                 </Spacer>
             </FormBox>

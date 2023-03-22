@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
+import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
-import { Header, Modal, Upload, Image } from '../components';
+import { Header, Modal, Upload } from '../components';
 import { LetterList, PresentList } from "../components/domain";
+import useToggle from "../hooks/useToggle";
 
 const PageBackground = styled.div`
     width: 100%;
@@ -123,6 +125,7 @@ const UploadBox = styled.div`
     font-size: 1.4rem;
     padding: auto;
 `;
+
 export default function GiftRoom() {
     const [roomName, setRoomName] = useState("");
     const [dDay, setDDay] = useState(0);
@@ -130,8 +133,11 @@ export default function GiftRoom() {
     const [messageFormVisible, setMessageFormVisible] = useState(false);
     const [presentFormVisible, setPresentFormVisible] = useState(false);
     const uploadImageRef = useRef(null);
+    const [loading, setLoading] = useState(false);
+
     const handleCopyAddress = () => {
         navigator.clipboard.writeText(window.location.href);
+        alert('복사되었습니다!');
     }
 
     const showMessageForm = () => {
@@ -157,6 +163,20 @@ export default function GiftRoom() {
         }
     };
 
+    // 방 정보 api - 서버 접속 오류 해결 시 사용
+    useEffect(() => {
+        const fetchData = async () => {
+            const postData = { room_id: "gst379" };
+            const res = await axios.get(`http://52.91.127.102:8080/room-content/${postData.room_id}`);
+            console.log(res.data);
+            console.log(JSON.parse(res.data));
+        }
+
+        setLoading(true);
+        // fetchData();
+        setLoading(false);
+    }, []);
+
     return (
         <PageBackground>
             <ContentContainer>
@@ -165,7 +185,14 @@ export default function GiftRoom() {
                     Birthday Postbox
                 </h1>
                 <h2>{roomName}<RoomDate>{dDay ? dDay : 'D'}-Day</RoomDate></h2>
-                <DisplayBox><PresentList /> <LetterList /></DisplayBox>
+                <DisplayBox>
+                    {!loading && (
+                    <>
+                        <PresentList presents={DUMMY.present} />
+                        <LetterList letters={DUMMY.messages}/>
+                    </>
+                    )}
+                </DisplayBox>
             </ContentContainer>
             <SideBar>
                 <Button onClick={() => handleCopyAddress()}>링크 복사</Button>
