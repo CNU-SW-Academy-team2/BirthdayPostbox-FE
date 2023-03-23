@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import { Header, Modal, Upload } from '../components';
-import { LetterList, PresentList } from "../components/domain";
-import useToggle from "../hooks/useToggle";
+import { LetterList, PresentList, MessageSendForm } from "../components/domain";
 
 const PageBackground = styled.div`
     width: 100%;
@@ -73,14 +73,6 @@ const WriteMessageButtonStyle = {
     }
 };
 
-const Input = styled.input`
-    border: none;
-`;
-const Icon = styled.i`
-    display: inline-block;
-    vertical-align: middle;
-`;
-
 const SenderInput = styled.input`
     width: 99%;
     border: 1.5px solid #BD97E0;
@@ -127,16 +119,21 @@ const UploadBox = styled.div`
 `;
 
 export default function GiftRoom() {
-    const [roomName, setRoomName] = useState("");
-    const [dDay, setDDay] = useState(0);
+    const { roomId } = useParams();
     const [celebrationVisible, setCelebrationVisible] = useState(false);
     const [messageFormVisible, setMessageFormVisible] = useState(false);
     const [presentFormVisible, setPresentFormVisible] = useState(false);
     const uploadImageRef = useRef(null);
     const [loading, setLoading] = useState(false);
-
+    const [roomData, setRoomData] = useState({
+        room_name : "",
+        room_date : "2023-03-22",
+        messages: [],
+        present: []
+    });
     const handleCopyAddress = () => {
         navigator.clipboard.writeText(window.location.href);
+        
         alert('복사되었습니다!');
     }
 
@@ -149,10 +146,6 @@ export default function GiftRoom() {
         setPresentFormVisible(true);
     };
 
-    useEffect(() => {
-        setRoomName(DUMMY.room_name);
-        setDDay(Math.floor((new Date() - new Date(DUMMY.room_date)) / (1000 * 60 * 60 * 24)));
-    }, [])
 
     const onUploadImage = (changedFile) => {
         let reader = new FileReader();
@@ -163,19 +156,50 @@ export default function GiftRoom() {
         }
     };
 
+    const calculateDate = () => {
+        const dDay = Math.floor((new Date() - new Date(roomData.room_date)) / (1000 * 60 * 60 * 24));
+        return (dDay ? dDay : 'D') + '-Day';
+    }
     // 방 정보 api - 서버 접속 오류 해결 시 사용
     useEffect(() => {
         const fetchData = async () => {
-            const postData = { room_id: "gst379" };
-            const res = await axios.get(`http://52.91.127.102:8080/room-content/${postData.room_id}`);
-            console.log(res.data);
-            console.log(JSON.parse(res.data));
+            try {
+                const res = await axios.get(`/room-content`, {
+                    params: {
+                        room_id: roomId
+                    }
+                });
+
+                if (res.status === 200) {
+                    setRoomData(res.data);
+                }
+                else {
+                    throw new Error('방 정보를 불러올 수 없습니다.');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+
         }
 
+        const fetchMessage = async () => {
+            try {
+                const { data } = await axios.get('/message', {
+                    params: {
+                        id: "k895f4"
+                    }
+                });
+                console.log(data);
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
         setLoading(true);
-        // fetchData();
+        fetchData();
         setLoading(false);
-    }, []);
+        fetchMessage();
+    }, [roomId]);
 
     return (
         <PageBackground>
@@ -184,12 +208,12 @@ export default function GiftRoom() {
                     생일빵<br/>
                     Birthday Postbox
                 </h1>
-                <h2>{roomName}<RoomDate>{dDay ? dDay : 'D'}-Day</RoomDate></h2>
+                <h2>{!loading && roomData.room_name }<RoomDate>{!loading && calculateDate()}</RoomDate></h2>
                 <DisplayBox>
                     {!loading && (
                     <>
-                        <PresentList presents={DUMMY.present} />
-                        <LetterList letters={DUMMY.messages}/>
+                        <PresentList presents={roomData.presents} />
+                        <LetterList letters={roomData.messages}/>
                     </>
                     )}
                 </DisplayBox>
@@ -206,23 +230,18 @@ export default function GiftRoom() {
                 <Button onClick={() => showMessageForm()} style={WriteMessageButtonStyle}>메시지 남기기</Button>
                 <Button onClick={() => showPresentForm()} style={WriteMessageButtonStyle}>선물 남기기</Button>
             </Modal>
-            <Modal
-            visible={messageFormVisible}
-            onClose={() => setMessageFormVisible(false)}
-            width='40%'
-            minHeight='80%'
-            style={{ display: 'inline-block', backgroundColor: 'linear-gradient(68deg, #FF62B7 14.39%, #9F53FF 79.59%)', borderRadius: '20px', border: '3px solid #C49DE7'}}
-            >
-                <Header level={2}>메시지 작성하기</Header>
-                <form>
-                    <div>작성자<SenderInput type='text' placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!" /></div>
-                    <div style={{marginTop: '20px'}}>메시지 남기기<TextBox placeholder="당신의 마음을 표현해주세요!" contentEditable /></div>
-                    <SubmitButton>제출하기</SubmitButton>
-                </form>
-            </Modal>
+                <Modal
+                visible={messageFormVisible}
+                onClose={setMessageFormVisible}
+                width='800px'
+                height='800px'
+                style={{ display: 'inline-block', backgroundColor: 'linear-gradient(68deg, #FF62B7 14.39%, #9F53FF 79.59%)', borderRadius: '20px', border: '3px solid #C49DE7'}}
+                >
+                    <MessageSendForm onSubmit={() => setMessageFormVisible(false)}/>
+                </Modal>
             <Modal
             visible={presentFormVisible}
-            onClose={() => setPresentFormVisible(false)}
+            onClose={setPresentFormVisible}
             width='1100px'
             style={{ backgroundColor: 'RGBA(255,246,246, 1)', borderRadius: '20px', border: '3px solid #C49DE7', maxWidth: '80vw', maxHeight: '60vh'}}
             >
@@ -236,7 +255,7 @@ export default function GiftRoom() {
                         >
                             { (file, dragging) => 
                             <UploadBox style={{ borderColor: dragging ? '#1E77CC' : '#559ce0'}}>
-                                {file ? <img ref={(ref) => {uploadImageRef.current = ref}} style={{
+                                {file ? <img ref={(ref) => {uploadImageRef.current = ref}} alt="" style={{
                                     objectFit: 'fill',
                                     maxWidth: '298px',
                                     overflow: 'hidden'}} /> : 'Browse Files to upload'}
@@ -252,31 +271,4 @@ export default function GiftRoom() {
             </Modal>
         </PageBackground>
     );
-}
-
-
-// 방 정보 API 결과
-const DUMMY = {
-    "room_name" : "○○○의 방",
-    "room_date" : "2023-02-04",
-    "messages": [
-            {
-                "message_id": "JD8DG5",
-                "message_sender": "김보리"
-            },
-            {
-                "message_id": "JD8D66",
-                "message_sender": "박수강"
-            },
-    ],
-    "present": [
-            {
-                "present_id": "JD8DG5",
-                "present_sender": "김보리"
-            },
-            {
-                "present_id": "JD8D66",
-                "present_sender": "박수강"
-            },
-    ]   
 }

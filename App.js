@@ -8,7 +8,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Main />}/>
         <Route path='/CreateRoom' element={<CreateRoom />}/>
-        <Route path='/GiftRoom' element={<GiftRoom />}/>
+        <Route path='/GiftRoom/:roomId' element={<GiftRoom />}/>
       </Routes>
     </DefaultComponent>
   );
