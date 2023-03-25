@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+# 환경 세팅
+
+git clone 이후 package.json이 있는 폴더에서
+npm install
+
+git push
+
+=======
+>>>>>>> 503134644b012e51a8cfcd291a71375309c95e60
 # 라이브러리 설치
 
 1. craco
@@ -24,6 +34,44 @@ module.exports = {
     },
 }
 
+<<<<<<< HEAD
+~~
+3. storybook 
+npx -p @storybook/cli sb init
+~~
+
+4. feather icon
+npm install feather-icons
+
+5. axios
+yarn add axios
+
+
+6. React Router
+yarn add react-router-dom
+
+~~
+설치 이후 craco.config.js 파일을 다음과 같이 변경
+
+const path = require('path');
+
+module.exports = {
+    babel: {
+        presets: ["@emotion/babel-preset-css-prop"],
+    },
+    webpack: {
+        alias:  {
+            '@components':  path.resolve(__dirname, 'src/components'),
+            '@hooks':  path.resolve(__dirname, 'src/hooks'),
+            '@contexts':  path.resolve(__dirname, 'src/contexts'),
+            '@pages':  path.resolve(__dirname, 'src/pages'),
+        }
+    }
+} 
+
+src/index.js 에서 <App />을 <BrowserRouter></BrowserRouter>로 감싸줌
+~~
+=======
 3. feather icon
 npm install feather-icons
 
@@ -36,3 +84,4 @@ yarn add react-router-dom
 
 
 src/index.js 에서 <App />을 <BrowserRouter></BrowserRouter>로 감싸줌
+>>>>>>> 503134644b012e51a8cfcd291a71375309c95e60
