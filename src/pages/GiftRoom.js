@@ -84,10 +84,11 @@ export default function GiftRoom() {
     const [celebrationVisible, setCelebrationVisible] = useState(false);
     const [messageFormVisible, setMessageFormVisible] = useState(false);
     const [presentFormVisible, setPresentFormVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    
     const [roomData, setRoomData] = useState({
         room_name : "",
-        room_date : "2023-03-22",
+        room_date : "",
         messages: [],
         present: []
     });
@@ -107,10 +108,27 @@ export default function GiftRoom() {
         setPresentFormVisible(true);
     };
 
-    // 계산 오류 - 년도를 제외하고 계산해야 함
     const calculateDate = () => {
-        const dDay = Math.floor((new Date() - new Date(roomData.room_date)) / (1000 * 60 * 60 * 24));
-        return (dDay ? dDay : 'D') + '-Day';
+        if (!roomData.room_date) {
+            return "";
+        }
+        console.log(roomData.room_date);
+
+        const today = new Date();
+        const birthdayDate = new Date(roomData.room_date);
+
+        if (birthdayDate.getMonth() < today.getMonth() ||
+            (birthdayDate.getMonth() === today.getMonth() && birthdayDate.getDate() <= today.getDate())
+        ) {
+            birthdayDate.setFullYear(today.getFullYear() + 1);
+        }
+        else {
+            birthdayDate.setFullYear(today.getFullYear());
+        }
+
+        const diff = birthdayDate.getTime() - today.getTime();
+        const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+        return (daysLeft ? daysLeft : 'D') + '-Day';
     }
 
     useEffect(() => {
@@ -134,6 +152,7 @@ export default function GiftRoom() {
 
         }
 
+        // 메시지 내용 조회 API
         const fetchMessage = async () => {
             try {
                 const { data } = await axios.get('/message', {
