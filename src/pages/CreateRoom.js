@@ -79,6 +79,22 @@ const ErrorMessage = styled.span`
     
 `;
 
+const TitleWrapper = styled.div`
+    padding: 20px;
+`;
+
+const StyledTitle = styled.div`
+    font-family: NanumNeoEB;
+    font-size: 35px;
+    margin: 20px;
+`;
+
+const StyledSubTitle = styled.div`
+    font-family: NanumNeoB;
+    font-size: 25px;
+    margin: 35px;
+`;
+
 export default function CreateRoom() {
     const navigate = useNavigate();
 
@@ -118,22 +134,26 @@ export default function CreateRoom() {
     });
     return (
         <PageWrapper>
-            <Title>생일빵: Brithday Postbox</Title>
+            <TitleWrapper>
+                <img alt="MainTitle" width = '350' height = '125' src={process.env.PUBLIC_URL + 'icon/Title2.png'}/>
+            </TitleWrapper>
             <FormBox onSubmit={handleSubmit}>
                 <Spacer type="vertical">
-                    <h1>새로운 방 생성하기</h1>
+                    <StyledTitle>새로운 방 생성하기</StyledTitle>
                     <InputContainer>
-                        <Label>방 이름</Label>
+                        <StyledSubTitle>방 이름</StyledSubTitle>
                         <Input
                         name="roomName"
                         type="text"
                         placeholder="방 이름을 입력해주세요."
                         onChange={handleChange}
+                        maxlength = '10'
+                        style={{width:200, height:30, fontSize: 20}}
                         />
                         <ErrorMessage>{errors.roomName}</ErrorMessage>
                     </InputContainer>
                     <InputContainer>
-                        <Label>생일을 입력해주세요.</Label>
+                        <StyledSubTitle>생일을 입력해주세요.</StyledSubTitle>
                         <StyledInput
                         name="roomBirthdate"
                         type="date"
@@ -144,13 +164,14 @@ export default function CreateRoom() {
                         <ErrorMessage>{errors.roomBirthdate}</ErrorMessage>
                     </InputContainer>
                     <InputContainer>
-                        <Label>이메일을 입력해주세요. </Label>
+                        <StyledSubTitle>이메일을 입력해주세요. </StyledSubTitle>
                         <Input
                         name="roomEmail"
                         type="email"
-                        label="선물을 받음 사람의 이메일을 입력해주세요."
-                        placeholder=""
+                        label="선물을 받는 사람의 이메일을 입력해주세요."
+                        placeholder="선물을 받는 사람의 이메일을 입력해주세요."
                         onChange={handleChange}
+                        style={{width:400, height:30, fontSize: 20}}
                         />
                         <ErrorMessage>{errors.roomEmail}</ErrorMessage>
                     </InputContainer>
