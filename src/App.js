@@ -4,13 +4,11 @@ import DefaultComponent from './components/DefaultComponent';
 
 function App() {
   return (
-    <DefaultComponent>
       <Routes>
         <Route path='/' element={<Main />}/>
         <Route path='/CreateRoom' element={<CreateRoom />}/>
         <Route path='/GiftRoom/:roomId' element={<GiftRoom />}/>
       </Routes>
-    </DefaultComponent>
   );
 }
 

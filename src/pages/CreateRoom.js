@@ -118,7 +118,7 @@ export default function CreateRoom() {
                     navigate(`/GiftRoom/${res.data}`);
                 }
                 else {
-                    throw new Error(`방 생성 api 오류 Status ${res.status}`);   // 방 5회 이상 생겼을 경우
+                    throw new Error(`이 이메일로 만들 수 있는 방의 수가 초과되었습니다.`);   // 방 5회 이상 생겼을 경우
                 }
             } catch (e) {
                 console.error(e);
