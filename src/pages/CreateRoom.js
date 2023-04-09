@@ -5,6 +5,7 @@ import useForm from "../hooks/useForm";
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { useEffect } from "react";
+import { Title2 } from "../components/domain";
 
 const PageWrapper = styled.div`
 `;
@@ -142,7 +143,7 @@ export default function CreateRoom() {
     return (
         <PageWrapper>
             <TitleWrapper>
-                <img alt="MainTitle" width = '350' height = '125' src={process.env.PUBLIC_URL + 'icon/Title2.png'}/>
+                <Title2 />
             </TitleWrapper>
             <FormBox onSubmit={handleSubmit}>
                 <Spacer type="vertical">

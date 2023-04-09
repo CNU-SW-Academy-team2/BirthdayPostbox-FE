@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { Main, CreateRoom, GiftRoom } from './pages'
-import DefaultComponent from './components/DefaultComponent';
+import { Main, CreateRoom, GiftRoom, Congratulation } from './pages'
 
 function App() {
   return (
@@ -8,6 +7,7 @@ function App() {
         <Route path='/' element={<Main />}/>
         <Route path='/CreateRoom' element={<CreateRoom />}/>
         <Route path='/GiftRoom/:roomId' element={<GiftRoom />}/>
+        <Route path='/Congratulation/:roomId' element={<Congratulation />}/>
       </Routes>
   );
 }
