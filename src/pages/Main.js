@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
-import { Text, Icon, Header } from '../components';
 import '../Font.css';
 
 const PageContainer = styled.div`
@@ -53,7 +52,7 @@ const StyledTitleText = styled.div`
 
 const StyledConText = styled.pre`
     font-family: NanumNeoB;
-    font-size: 20px
+    font-size: 20px;
 `;
 
 const StyledImgBox = styled.div`

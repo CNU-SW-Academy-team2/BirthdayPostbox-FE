@@ -3,14 +3,11 @@ import axios from "axios";
 import { Spacer, Spinner } from "../components";
 import useForm from "../hooks/useForm";
 import { useNavigate } from 'react-router-dom';
-const PageWrapper = styled.div`
-`;
+import { useState } from "react";
+import { useEffect } from "react";
+import { Title2 } from "../components/domain";
 
-const Title = styled.h2`
-    display: block;
-    margin-top: 0px;
-    padding-top: 12px;
-    padding-left: 8px;
+const PageWrapper = styled.div`
 `;
 
 const FormBox = styled.form`
@@ -29,9 +26,7 @@ const FormBox = styled.form`
 const InputContainer = styled.div`
     margin-top: 30px;
 `;
-const Label = styled.div`
 
-`;
 const Input = styled.input`
     border: 0px;
     border-bottom: 0.5px solid black;
@@ -73,10 +68,8 @@ const StyledInput = styled.input`
   }
 `;
 
-const ErrorMessage = styled.span`
-    display: flex;
+const ErrorMessage = styled.div`
     color: red;
-    
 `;
 
 const TitleWrapper = styled.div`
@@ -97,6 +90,19 @@ const StyledSubTitle = styled.div`
 
 export default function CreateRoom() {
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
+    const [minDate, setMinDate] = useState(); 
+    const [maxDate, setMaxDate] = useState(); 
+    useEffect(() => {
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() + 1);
+        setMaxDate(maxDate.toISOString().slice(0, 10));
+
+        const minDate = new Date();
+        minDate.setDate(minDate.getDate() + 1);
+        setMinDate(minDate.toISOString().slice(0, 10));
+
+    }, []);
 
     const { isLoading, errors, handleChange, handleSubmit } = useForm({
         initialState: {
@@ -117,11 +123,12 @@ export default function CreateRoom() {
                 if (res.status === 200) {
                     navigate(`/GiftRoom/${res.data}`);
                 }
-                else {
-                    throw new Error(`방 생성 api 오류 Status ${res.status}`);   // 방 5회 이상 생겼을 경우
-                }
+
+                throw new Error(`방 생성 API 전송 오류`);   // 방 5회 이상 생겼을 경우
             } catch (e) {
-                console.error(e);
+                if (e.response.status === 400) {
+                    setErrorMessage("해당 이메일로 더 이상 방을 생성할 수 없습니다.");
+                }
             }
         },
         validate: ({ roomName, roomEmail, roomBirthdate }) => {
@@ -132,10 +139,11 @@ export default function CreateRoom() {
             return errors;
         }
     });
+
     return (
         <PageWrapper>
             <TitleWrapper>
-                <img alt="MainTitle" width = '350' height = '125' src={process.env.PUBLIC_URL + 'icon/Title2.png'}/>
+                <Title2 />
             </TitleWrapper>
             <FormBox onSubmit={handleSubmit}>
                 <Spacer type="vertical">
@@ -153,12 +161,12 @@ export default function CreateRoom() {
                         <ErrorMessage>{errors.roomName}</ErrorMessage>
                     </InputContainer>
                     <InputContainer>
-                        <StyledSubTitle>생일을 입력해주세요.</StyledSubTitle>
+                        <StyledSubTitle>축하받을 날을 지정해주세요.</StyledSubTitle>
                         <StyledInput
                         name="roomBirthdate"
                         type="date"
-                        min="1900-01-01"
-                        max={new Date().toISOString().slice(0, 10)}
+                        min={minDate}
+                        max={maxDate}
                         onChange={handleChange}
                         />
                         <ErrorMessage>{errors.roomBirthdate}</ErrorMessage>
@@ -173,7 +181,7 @@ export default function CreateRoom() {
                         onChange={handleChange}
                         style={{width:400, height:30, fontSize: 20}}
                         />
-                        <ErrorMessage>{errors.roomEmail}</ErrorMessage>
+                        <ErrorMessage>{errors.roomEmail}{errorMessage}</ErrorMessage>
                     </InputContainer>
                     <InputContainer>
                         <LinkButton type="submit" disabled={isLoading}>{isLoading ? <Spinner /> : '링크 생성하기' }</LinkButton>

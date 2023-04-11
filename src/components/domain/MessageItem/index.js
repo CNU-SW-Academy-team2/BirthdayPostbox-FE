@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 
-const LetterBox = styled.li`
+const MessageBox = styled.li`
     border: 1px solid blue;
     width: 300px;
     height: 300px;
@@ -10,14 +10,18 @@ const LetterBox = styled.li`
     :not(:first-of-type) {
         margin-top: 20px;
     }
+
+    &:hover {
+        cursor: ${({onClick}) => onClick && "pointer"}
+    }
 `;
 
-const LetterItem = ({ id, sender }) => {
-    return <LetterBox>
+const MessageItem = ({ sender, onClick }) => {
+
+    return <MessageBox onClick={onClick}>
         This is Message. <br/><br/>
-        ID: {id} <br />
         Sender: {sender}
-    </LetterBox>
+    </MessageBox>
 }
 
-export default LetterItem;
+export default MessageItem;

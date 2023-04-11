@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Modal, Icon } from '../components';
-import { LetterList, PresentList, MessageSendForm } from "../components/domain";
+import { PresentList, MessageSendForm, Title2, MessageList } from "../components/domain";
 import PresentSendForm from "../components/domain/PresentSendForm";
 
 const PageBackground = styled.div`
@@ -90,7 +90,7 @@ export default function GiftRoom() {
         room_name : "",
         room_date : "",
         messages: [],
-        present: []
+        presents: []
     });
 
     const handleCopyAddress = () => {
@@ -112,7 +112,6 @@ export default function GiftRoom() {
         if (!roomData.room_date) {
             return "";
         }
-        console.log(roomData.room_date);
 
         const today = new Date();
         const birthdayDate = new Date(roomData.room_date);
@@ -152,20 +151,6 @@ export default function GiftRoom() {
 
         }
 
-        // 메시지 내용 조회 API
-        const fetchMessage = async () => {
-            try {
-                const { data } = await axios.get('/message', {
-                    params: {
-                        id: "k895f4"
-                    }
-                });
-                console.log(data);
-
-            } catch (e) {
-                console.error(e);
-            }
-        }
         setLoading(true);
         fetchData();
         setLoading(false);
@@ -175,17 +160,14 @@ export default function GiftRoom() {
         <PageBackground>
             <ContentContainer>
                 <RoomInfoWrapper>
-                    <h1 style={{ marginTop: '0px'}}>
-                        생일빵<br/>
-                        Birthday Postbox
-                    </h1>
+                    <Title2 />
                     <h2>{!loading && roomData.room_name }<RoomDate>{!loading && calculateDate()}</RoomDate></h2>
                 </RoomInfoWrapper>
                 <DisplayBox>
                     {!loading && (
                     <>
                         <PresentList presents={roomData.presents} />
-                        <LetterList letters={roomData.messages}/>
+                        <MessageList messages={roomData.messages}/>
                     </>
                     )}
                 </DisplayBox>

@@ -5,14 +5,15 @@ const ListContainer = styled.ul`
     padding-left: 0;
 `;
 
-const PresentList = ({ presents = [] }) => {
+const PresentList = ({ presents = [], onClick }) => {
+
     return (
         <ListContainer>
             {presents.map(({present_id, present_sender}) => 
                 <PresentItem
                     key={present_id}
-                    id={present_id}
                     sender={present_sender}
+                    onClick={onClick && (() => onClick(present_id))}
                 />
             )}
         </ListContainer>

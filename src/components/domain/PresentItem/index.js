@@ -10,15 +10,19 @@ const PresentBox = styled.li`
     :not(:first-of-type) {
         margin-top: 20px;
     }
+
+    &:hover {
+        cursor: ${({onClick}) => onClick && "pointer"}
+    }
 `;
 
-const PresentItem = ({ id, sender }) => {
+const PresentItem = ({ sender, onClick }) => {
+
     return (
-    <PresentBox>
-        This is Present. <br/><br/>
-        ID: {id} <br />
-        Sender: {sender}
-    </PresentBox>
+        <PresentBox onClick={onClick}>
+            This is Present. <br/><br/>
+            Sender: {sender}
+        </PresentBox>
     );
 }
 
