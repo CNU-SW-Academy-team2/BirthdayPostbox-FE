@@ -1,4 +1,6 @@
 import styled from "@emotion/styled";
+import Button from '@mui/material/Button';
+import { createTheme } from '@mui/material/styles';
 import axios from "axios";
 import { Spacer, Spinner } from "../components";
 import useForm from "../hooks/useForm";
@@ -87,6 +89,16 @@ const StyledSubTitle = styled.div`
     font-size: 25px;
     margin: 35px;
 `;
+
+const ButtonTheme = createTheme({
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#ffcdd2',
+    }
+  }
+});
+
 
 export default function CreateRoom() {
     const navigate = useNavigate();
@@ -184,7 +196,7 @@ export default function CreateRoom() {
                         <ErrorMessage>{errors.roomEmail}{errorMessage}</ErrorMessage>
                     </InputContainer>
                     <InputContainer>
-                        <LinkButton type="submit" disabled={isLoading}>{isLoading ? <Spinner /> : '링크 생성하기' }</LinkButton>
+                        <Button variant="contained" type="submit" theme={ButtonTheme} sx={{ width: 200, padding: 1, margin: 2, fontSize: 20}} disabled={isLoading} > {isLoading ? <Spinner /> : '링크 생성하기' }</Button>
                     </InputContainer>
                 </Spacer>
             </FormBox>

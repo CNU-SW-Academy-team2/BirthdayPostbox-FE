@@ -133,9 +133,11 @@ export default function GiftRoom() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                console.log(roomId);
                 const res = await axios.get(`/room-content`, {
                     params: {
-                        room_id: roomId
+                        room_id: roomId,
+                        
                     }
                 });
 
@@ -173,8 +175,8 @@ export default function GiftRoom() {
                 </DisplayBox>
             </ContentContainer>
             <SideBar>
-                <Button onClick={() => handleCopyAddress()}><Icon name="copy" size={36} block center />링크 복사</Button>
-                <Button onClick={() => setCelebrationVisible(true)}><Icon name="message-square" size={36} block center />축하하기</Button>
+                <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={process.env.PUBLIC_URL + '/icon/Button_CopyLink.png'}/><br/>
+                <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={process.env.PUBLIC_URL + '/icon/Button_congrats.png'}/>
             </SideBar>
             <Modal
             visible={celebrationVisible}
@@ -183,6 +185,8 @@ export default function GiftRoom() {
                 >
                 <Button onClick={() => showMessageForm()} style={WriteMessageButtonStyle}>메시지 남기기</Button>
                 <Button onClick={() => showPresentForm()} style={WriteMessageButtonStyle}>선물 남기기</Button>
+                {/* <img  alt="Button" width = '100' height = '125'  onClick={() => showMessageForm()} src={process.env.PUBLIC_URL + '/icon/Button_message.png'}/><br/>
+                <img  alt="Button" width = '100' height = '125'  onClick={() => showPresentForm()} src={process.env.PUBLIC_URL + '/icon/Button_present.png'}/><br/> */}
             </Modal>
             <Modal
                 visible={messageFormVisible}
