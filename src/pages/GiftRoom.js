@@ -92,7 +92,7 @@ const WriteMessageButtonStyle = {
 };
 
 export default function GiftRoom() {
-    const { roomId } = useParams();
+    const { room_id } = useParams();
     const [celebrationVisible, setCelebrationVisible] = useState(false);
     const [messageFormVisible, setMessageFormVisible] = useState(false);
     const [presentFormVisible, setPresentFormVisible] = useState(false);
@@ -145,11 +145,9 @@ export default function GiftRoom() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log(roomId);
                 const res = await axios.get(`/room-content`, {
                     params: {
-                        room_id: roomId,
-                        
+                        room_id
                     }
                 });
 
@@ -168,7 +166,7 @@ export default function GiftRoom() {
 
         setLoading(true);
         fetchData();
-    }, [roomId]);
+    }, [room_id]);
 
     return (
         <PageBackground>
