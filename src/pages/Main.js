@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import '../Font.css';
 
+const ICON_RESOURCE_PATH = process.env.PUBLIC_URL + "/icon";
+
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -86,7 +88,7 @@ export default function Main() {
     return (
     <PageContainer>
         <TitleWrapper>
-            <img alt="MainTitle" width = '600' height = '500' src={process.env.PUBLIC_URL + 'icon/Title.png'}/>
+            <img alt="MainTitle" width = '600' height = '500' src={ ICON_RESOURCE_PATH + '/Title.png' }/>
         </TitleWrapper>
 
         <Description>
@@ -102,8 +104,9 @@ export default function Main() {
         </StyledImgBox> */}
         
         
-        <LinkWrapper><Link to="/CreateRoom" style={{ ...LinkStlye }}><img  alt="Button" width = '150' height = '200' src={process.env.PUBLIC_URL + 'icon/Button_CreateRoom.png'}/>
-        </Link></LinkWrapper>
+        <LinkWrapper>
+            <Link to="/CreateRoom" style={LinkStlye}><img  alt="Button" width = '150' height = '200' src={ ICON_RESOURCE_PATH + '/Button_CreateRoom.png' }/></Link>
+        </LinkWrapper>
     </PageContainer>
     );
 }

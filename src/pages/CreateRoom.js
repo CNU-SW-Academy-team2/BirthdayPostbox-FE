@@ -65,7 +65,6 @@ const StyledInput = styled.input`
 
   // input date를 위한 css 요소 이후에 다른 형식으로 변경되면 삭제
   ::-webkit-calendar-picker-indicator {
-    filter: invert(1);
     margin-right: 0.5rem;
   }
 `;
@@ -133,7 +132,7 @@ export default function CreateRoom() {
                 });
 
                 if (res.status === 200) {
-                    navigate(`/GiftRoom/${res.data}`);
+                    navigate(`/gift/${res.data}`);
                 }
 
                 throw new Error(`방 생성 API 전송 오류`);   // 방 5회 이상 생겼을 경우

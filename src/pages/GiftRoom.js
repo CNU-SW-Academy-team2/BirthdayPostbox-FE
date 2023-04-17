@@ -6,7 +6,7 @@ import { Modal } from '../components';
 import { MessageSendForm, Title2, ItemBox } from "../components/domain";
 import PresentSendForm from "../components/domain/PresentSendForm";
 
-const RESOURCE_PATH_ICON = process.env.PUBLIC_URL + "/icon";
+const ICON_RESOURCE_PATH = process.env.PUBLIC_URL + "/icon";
 
 const PageBackground = styled.div`
     width: 100%;
@@ -53,6 +53,7 @@ const SideBar = styled.div`
         margin: 0 auto;
         cursor: pointer;
         user-select: none;
+
         :not(:first-of-type) {
             margin-top: 16px;
         }
@@ -191,8 +192,8 @@ export default function GiftRoom() {
                 </DisplayBox>
             </ContentContainer>
             <SideBar>
-                <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ RESOURCE_PATH_ICON + '/Button_CopyLink.png' }/>
-                <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={ RESOURCE_PATH_ICON + '/Button_congrats.png'}/>
+                <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ ICON_RESOURCE_PATH + '/Button_CopyLink.png' }/>
+                <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={ ICON_RESOURCE_PATH + '/Button_congrats.png'}/>
             </SideBar>
             <Modal
             visible={celebrationVisible}
