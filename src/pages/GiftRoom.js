@@ -2,9 +2,11 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Modal, Icon } from '../components';
-import { PresentList, MessageSendForm, Title2, MessageList } from "../components/domain";
+import { Modal } from '../components';
+import { MessageSendForm, Title2, ItemBox } from "../components/domain";
 import PresentSendForm from "../components/domain/PresentSendForm";
+
+const RESOURCE_PATH_ICON = process.env.PUBLIC_URL + "/icon";
 
 const PageBackground = styled.div`
     width: 100%;
@@ -41,11 +43,20 @@ const RoomDate = styled.span`
 
 const SideBar = styled.div`
     position: fixed;
-    display: block;
     top: 60%;
     right: 0;
     min-width: 8%;
     margin: 1%;
+
+    & > img {
+        display: block;
+        margin: 0 auto;
+        cursor: pointer;
+        user-select: none;
+        :not(:first-of-type) {
+            margin-top: 16px;
+        }
+    }
 `;
 
 const Button = styled.button`
@@ -143,6 +154,7 @@ export default function GiftRoom() {
 
                 if (res.status === 200) {
                     setRoomData(res.data);
+                    setLoading(false);
                 }
                 else {
                     throw new Error('방 정보를 불러올 수 없습니다.');
@@ -155,7 +167,6 @@ export default function GiftRoom() {
 
         setLoading(true);
         fetchData();
-        setLoading(false);
     }, [roomId]);
 
     return (
@@ -168,15 +179,20 @@ export default function GiftRoom() {
                 <DisplayBox>
                     {!loading && (
                     <>
-                        <PresentList presents={roomData.presents} />
-                        <MessageList messages={roomData.messages}/>
+                        <ItemBox 
+                            width={1200}
+                            height={720}
+                            style={{ justifyContent: "end" }}
+                            messages={roomData.messages}
+                            presents={roomData.presents}
+                        />
                     </>
                     )}
                 </DisplayBox>
             </ContentContainer>
             <SideBar>
-                <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={process.env.PUBLIC_URL + '/icon/Button_CopyLink.png'}/><br/>
-                <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={process.env.PUBLIC_URL + '/icon/Button_congrats.png'}/>
+                <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ RESOURCE_PATH_ICON + '/Button_CopyLink.png' }/>
+                <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={ RESOURCE_PATH_ICON + '/Button_congrats.png'}/>
             </SideBar>
             <Modal
             visible={celebrationVisible}
@@ -185,8 +201,6 @@ export default function GiftRoom() {
                 >
                 <Button onClick={() => showMessageForm()} style={WriteMessageButtonStyle}>메시지 남기기</Button>
                 <Button onClick={() => showPresentForm()} style={WriteMessageButtonStyle}>선물 남기기</Button>
-                {/* <img  alt="Button" width = '100' height = '125'  onClick={() => showMessageForm()} src={process.env.PUBLIC_URL + '/icon/Button_message.png'}/><br/>
-                <img  alt="Button" width = '100' height = '125'  onClick={() => showPresentForm()} src={process.env.PUBLIC_URL + '/icon/Button_present.png'}/><br/> */}
             </Modal>
             <Modal
                 visible={messageFormVisible}
