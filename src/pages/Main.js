@@ -105,7 +105,7 @@ export default function Main() {
         
         
         <LinkWrapper>
-            <Link to="/CreateRoom" style={LinkStlye}><img  alt="Button" width = '150' height = '200' src={ ICON_RESOURCE_PATH + '/Button_CreateRoom.png' }/></Link>
+            <Link to="/create" style={LinkStlye}><img  alt="Button" width = '150' height = '200' src={ ICON_RESOURCE_PATH + '/Button_CreateRoom.png' }/></Link>
         </LinkWrapper>
     </PageContainer>
     );
