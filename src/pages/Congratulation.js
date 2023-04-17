@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { MessageList, PresentList, Title2 } from "../components/domain";
+import { useParams, useNavigate } from "react-router-dom";
+import { ItemBox, Title2 } from "../components/domain";
 import { Modal } from "../components";
 
 const PageBackground = styled.div`
@@ -29,22 +29,26 @@ const DisplayBox = styled.div`
 
 
 export default function Congratulation() {
-    const { roomId } = useParams();
+    const { room_id, owner_code } = useParams();
+    const navigate = useNavigate();
+
     const [roomLoading, setRoomLoading] = useState(true);
     const [itemDetailsLoading, setItemDetailsLoading] = useState(true);
     const [messageDetailVisible, setMessageDetailVisible] = useState(false);
     const [messageDetails, setMessageDetail] = useState({
-        messageId: null,
-        messageSender: "",
-        messageContent: ""
+        message_id: "",
+        message_sender: "",
+        message_content: "",
+        room_category : ""
     });
 
     const [presentDetailVisible, setPresentDetailVisible] = useState(false);
     const [presentDetails, setPresentDetails] = useState({
-        presentId: null,
-        presentSender: "",
-        presentContent: "",
-        presentImgUrl: ""
+        present_id: "",
+        present_sender: "",
+        present_content: "",
+        present_img_url: "",
+        room_category : ""
     });
 
     const [roomData, setRoomData] = useState({
@@ -59,78 +63,69 @@ export default function Congratulation() {
             try {
                 const res = await axios.get(`/room-content`, {
                     params: {
-                        room_id: roomId
+                        room_id
                     }
                 });
 
                 if (res.status === 200) {
                     setRoomData(res.data);
+                    setRoomLoading(false);
                 }
                 else {
                     throw new Error('방 정보를 불러올 수 없습니다.');
                 }
+
             } catch (e) {
                 console.error(e);
             }
-
         }
-
         setRoomLoading(true);
         fetchData();
-        setRoomLoading(false);
-    }, [roomId]);
+    }, [room_id]);
 
-    const fetchMessage = async (id) => {
+    const handleSelectMessage = async (id) => {
+        setItemDetailsLoading(true);
+        setMessageDetailVisible(true);
         try {
             const res = await axios.get('/message', {
                 params: {
-                    id
-                }
-            });
-
-            if (res.status === 200) {
-                return res.data;
-            }
-            else {
-                throw new Error("선물 상세 확인 API 오류");
-            }
-
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    const fetchPresent = async (id) => {
-        try {
-            const res = await axios.get('/present', {
-                params: {
-                    id
+                    id,
+                    owner_code
                 }
             });
             if (res.status === 200) {
-                return res.data;
+                setMessageDetail(res.data);
             }
             else {
-                throw new Error("선물 상세 확인 API 오류");
+                throw new Error("메시지 상세 확인 API 오류");
             }
         } catch (e) {
-            console.error(e);
+            alert("허용되지 않은 링크입니다.");
+            navigate("/");
         }
-    }
-
-    const handleClickMessage = async (id) => {
-        setItemDetailsLoading(true);
-        setMessageDetailVisible(true);
-        const messageDetails = await fetchMessage(id);
-        setMessageDetail(messageDetails);
         setItemDetailsLoading(false);
     }
 
-    const handleClickPresent = async (id) => {
+    const handleSelectPresent = async (id) => {
         setItemDetailsLoading(true);
         setPresentDetailVisible(true);
-        const presentDetails = await fetchPresent(id);
-        setPresentDetails(presentDetails);
+        try {
+            const res = await axios.get('/present', {
+                params: {
+                    id,
+                    owner_code
+                }
+            });
+            if (res.status === 200) {
+                setPresentDetails(res.data);
+            }
+            else {
+                throw new Error("선물 상세 확인 API 오류");
+            }
+        } catch (e) {
+            alert("허용되지 않은 링크입니다.");
+            navigate("/");
+        }
         setItemDetailsLoading(false);
     }
 
@@ -141,8 +136,15 @@ export default function Congratulation() {
                 <DisplayBox>
                     {!roomLoading && (
                     <>
-                        <PresentList presents={roomData.presents} onClick={handleClickPresent} />
-                        <MessageList messages={roomData.messages} onClick={handleClickMessage} />
+                        <ItemBox 
+                            width={1200}
+                            height={720}
+                            style={{ justifyContent: "end" }}
+                            messages={roomData.messages}
+                            presents={roomData.presents}
+                            onSelectMessage={handleSelectMessage}
+                            onSelectPresent={handleSelectPresent}
+                        />
                     </>
                     )}
                 </DisplayBox>
@@ -157,10 +159,10 @@ export default function Congratulation() {
                         ): (
                             <div>
                                 <div>
-                                    messageSender: {messageDetails.messageSender}
+                                    messageSender: {messageDetails.message_sender}
                                 </div>
                                 <div>
-                                    messageContent: {messageDetails.messageContent}
+                                    messageContent: {messageDetails.message_content}
                                 </div>
                             </div>
                         )}
@@ -177,13 +179,13 @@ export default function Congratulation() {
                         ): (
                             <div>
                                 <div>
-                                    presentSender: {presentDetails.presentSender}
+                                    presentSender: {presentDetails.present_sender}
                                 </div>
                                 <div>
-                                    presentContent: {presentDetails.presentContent}
+                                    presentContent: {presentDetails.present_content}
                                 </div>
                                 <div>
-                                    presentImgUrl: {presentDetails.presentImgUrl}
+                                    presentImgUrl: {presentDetails.present_img_url}
                                 </div>
                             </div>
                         )}

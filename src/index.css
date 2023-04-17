@@ -10,3 +10,15 @@ body {
     min-height: 100%;
     background: linear-gradient( 45deg, #DCF0F8, #F7F0DC, #F3ADCF );
 }
+
+.grab {
+    cursor: grab;
+}
+
+.grabbing {
+    cursor: grabbing;
+}
+
+.userSelectNone {
+    user-select: none;
+}

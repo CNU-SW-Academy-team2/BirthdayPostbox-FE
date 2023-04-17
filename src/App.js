@@ -5,9 +5,10 @@ function App() {
   return (
       <Routes>
         <Route path='/' element={<Main />}/>
-        <Route path='/CreateRoom' element={<CreateRoom />}/>
-        <Route path='/GiftRoom/:roomId' element={<GiftRoom />}/>
-        <Route path='/Congratulation/:roomId' element={<Congratulation />}/>
+        <Route path='/create' element={<CreateRoom />}/>
+        <Route path='/gift/:room_id' element={<GiftRoom />}/>
+        <Route path='/congratulation/:room_id/:owner_code' element={<Congratulation />}/>
+        <Route path='*' element={<div>404 not founded</div>} />
       </Routes>
   );
 }

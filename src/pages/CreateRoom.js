@@ -65,7 +65,6 @@ const StyledInput = styled.input`
 
   // input date를 위한 css 요소 이후에 다른 형식으로 변경되면 삭제
   ::-webkit-calendar-picker-indicator {
-    filter: invert(1);
     margin-right: 0.5rem;
   }
 `;
@@ -128,19 +127,18 @@ export default function CreateRoom() {
                     params: {
                         roomName,
                         roomBirthdate,
-                        roomEmail
+                        roomEmail,
+                        roomCategory: "BIRTHDAY"
                     }
                 });
-
+                console.log(res);
                 if (res.status === 200) {
-                    navigate(`/GiftRoom/${res.data}`);
+                    navigate(`/gift/${res.data}`);
                 }
 
                 throw new Error(`방 생성 API 전송 오류`);   // 방 5회 이상 생겼을 경우
             } catch (e) {
-                if (e.response.status === 400) {
-                    setErrorMessage("해당 이메일로 더 이상 방을 생성할 수 없습니다.");
-                }
+                setErrorMessage("해당 이메일로 더 이상 방을 생성할 수 없습니다.");
             }
         },
         validate: ({ roomName, roomEmail, roomBirthdate }) => {
