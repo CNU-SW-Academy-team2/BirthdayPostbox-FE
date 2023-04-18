@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import Matter from "matter-js";
+import { ItemEventContext } from "../../../context/ItemEventProvider";
 
-const WALL_THICKNESS = 100;
+const WALL_THICKNESS = 500;
 const LABEL_DISTANCE_X_DELTA = -45;
 const LABEL_DISTANCE_Y_DELTA = 50;
 const ADDITIONAL_WALL_HEIGHT = 0;
@@ -16,12 +17,17 @@ export default function ItemBox({
     presents = [],
     onSelectMessage,
     onSelectPresent,
+    handleAddMessage,
+    handleAddPresent,
     ...props
 }) {
     const containerRef = useRef();
     const canvasRef = useRef();
 
     height += ADDITIONAL_WALL_HEIGHT;
+
+    const { setEngine, gameObjects } = useContext(ItemEventContext);
+
     useEffect(() => {
         let Engine = Matter.Engine;
         let Render = Matter.Render;
@@ -29,6 +35,7 @@ export default function ItemBox({
         let Bodies = Matter.Bodies;
 
         let engine = Engine.create();
+        setEngine(engine);
 
         let render = Render.create({
             element: containerRef.current,
@@ -43,7 +50,7 @@ export default function ItemBox({
         });
 
         
-        const floor = Bodies.rectangle(width/2, height, width, WALL_THICKNESS, {
+        const floor = Bodies.rectangle(width/2, height+WALL_THICKNESS/2, width, WALL_THICKNESS, {
             id: 10000,
             label: "wall",
             isStatic: true,
@@ -52,7 +59,7 @@ export default function ItemBox({
             }
         })
 
-        const leftWall = Bodies.rectangle(0, height/2, WALL_THICKNESS, height, {
+        const leftWall = Bodies.rectangle(-WALL_THICKNESS/2, height/2, WALL_THICKNESS, height, {
             id: 10001,
             label: "wall",
             isStatic: true,
@@ -61,7 +68,7 @@ export default function ItemBox({
             }
         })
 
-        const rightWall = Bodies.rectangle(width, height/2, WALL_THICKNESS, height, {
+        const rightWall = Bodies.rectangle(width+WALL_THICKNESS/2, height/2, WALL_THICKNESS, height, {
             id: 10002,
             label: "wall",
             isStatic: true,
@@ -70,7 +77,7 @@ export default function ItemBox({
             }
         })
 
-        const ceiling = Bodies.rectangle(width/2, 0, width, WALL_THICKNESS, {
+        const ceiling = Bodies.rectangle(width/2, -WALL_THICKNESS/2, width, WALL_THICKNESS, {
             id: 10003,
             label: "wall",
             isStatic: true,
@@ -82,7 +89,6 @@ export default function ItemBox({
 
         World.add(engine.world, [floor, leftWall, rightWall, ceiling]);
 
-        const gameObjects = [];
         for (const { message_id, message_sender } of messages) {
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
             const randomAngle = Math.random();
@@ -92,12 +98,12 @@ export default function ItemBox({
             textElement.innerText = message_sender;
 
             textElement.style.position = 'absolute';
-            textElement.style.top = WALL_THICKNESS+30 + LABEL_DISTANCE_X_DELTA + 'px';
+            textElement.style.top = 30 + LABEL_DISTANCE_X_DELTA + 'px';
             textElement.style.left = randomX + LABEL_DISTANCE_Y_DELTA + 'px';
             textElement.style.fontSize = '20px';
             textElement.style.color = 'black';
 
-            const message = Bodies.circle(randomX, WALL_THICKNESS+30, 50, {
+            const message = Bodies.circle(randomX, 30, 50, {
                 id: message_id,
                 label: "message",
                 restitution: 0.9, 
@@ -125,7 +131,7 @@ export default function ItemBox({
             textElement.innerText = present_sender;
 
             textElement.style.position = 'absolute';
-            textElement.style.top = WALL_THICKNESS+30 + LABEL_DISTANCE_X_DELTA + 'px';
+            textElement.style.top = 30 + LABEL_DISTANCE_X_DELTA + 'px';
             textElement.style.left = randomX + LABEL_DISTANCE_Y_DELTA + 'px';
             textElement.style.fontSize = '20px';
             textElement.style.color = 'black';
@@ -140,7 +146,7 @@ export default function ItemBox({
                 yScale: 0.3
             };
 
-            const present = Bodies.circle(randomX, WALL_THICKNESS+30, 50, {
+            const present = Bodies.circle(randomX, 30, 50, {
                 id: present_id,
                 label: "present",
                 restitution: 0.9, 
@@ -169,30 +175,6 @@ export default function ItemBox({
               }
             }
         });
-
-
-        // grabbing 효과를 제어하기 어려워서 사용하지 않을 듯
-        // let isDragging = false;
-        //
-        // Matter.Events.on(mouseConstraint, "mousedown", (e) => {
-        //     const mousePosition = e.mouse.position;
-        //     const clickedBodies = Matter.Query.point(engine.world.bodies, mousePosition);
-        //     if (clickedBodies.length > 0) {
-        //         isDragging = true;
-        //         console.log(clickedBodies[0]);
-        //         canvas.style.cursor = "grabbing";
-        //     }
-        // })
-
-        // Matter.Events.on(mouseConstraint, "mouseup", (e) => {
-        //     const mousePosition = e.mouse.position;
-        //     const clickedBodies = Matter.Query.point(engine.world.bodies, mousePosition);
-        //     if (clickedBodies.length > 0) {
-        //         canvas.style.cursor = "";
-        //     }
-        //     isDragging = false;
-        // })
-
 
         Matter.Events.on(mouseConstraint, "mousemove", (e) => {
             const mousePosition = e.mouse.position;
@@ -234,12 +216,15 @@ export default function ItemBox({
                     onSelectPresent(bodies[0].id);
                 }
             }
-
+            
         }
-        canvasRef.current?.addEventListener('dblclick', handleDoubleClick);
+        document?.addEventListener('dblclick', handleDoubleClick);
 
+        handleAddMessage && handleAddMessage();
+        handleAddPresent && handleAddPresent();
+        
         return () => {
-            canvasRef.current?.removeEventListener('dblclick', handleDoubleClick);
+            document?.removeEventListener('dblclick', handleDoubleClick);
             document.querySelectorAll(".userSelectNone").forEach((element) => element.remove());
         }
         

@@ -3,7 +3,8 @@ import styled from '@emotion/styled';
 import useForm from '../../../hooks/useForm';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
+import { ItemEventContext } from '../../../context/ItemEventProvider';
 
 const SubmitButton = styled.button`
     background-color: #C49DE7;
@@ -46,12 +47,14 @@ export default function MessageSendForm({ onSubmit }) {
     const [sender, setSender] = useState("");
     const contentRef = useRef();
 
+    const { addMessage } = useContext(ItemEventContext);
+
     const { isLoading, errors, handleChange, handleSubmit, handleChangeCustom } = useForm({
         initialState: {
             sender: "",
             content: ""
         },
-        onSubmit: async ({ sender, content }) => {  // 현재 400 error 발생
+        onSubmit: async ({ sender, content }) => {
             try {
                 const jsonData = JSON.stringify({
                     messageSender: sender,
@@ -70,7 +73,8 @@ export default function MessageSendForm({ onSubmit }) {
                 if (res.status === 200) {
                     setSender("");
                     contentRef.current.innerHTML = "";
-                    onSubmit && onSubmit();
+                    onSubmit && onSubmit(sender);
+                    addMessage(sender);
                 }
                 else {
                     throw new Error(`메시지 전송 오류 Status ${res.status}`);

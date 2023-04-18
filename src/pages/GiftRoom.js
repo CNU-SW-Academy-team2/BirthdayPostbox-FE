@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { Modal } from '../components';
 import { MessageSendForm, Title2, ItemBox } from "../components/domain";
 import PresentSendForm from "../components/domain/PresentSendForm";
+import { ItemEventProvider } from "../context/ItemEventProvider";
 
 const ICON_RESOURCE_PATH = process.env.PUBLIC_URL + "/icon";
 
@@ -92,7 +93,7 @@ const WriteMessageButtonStyle = {
 };
 
 export default function GiftRoom() {
-    const { room_id } = useParams();
+    const { roomId } = useParams();
     const [celebrationVisible, setCelebrationVisible] = useState(false);
     const [messageFormVisible, setMessageFormVisible] = useState(false);
     const [presentFormVisible, setPresentFormVisible] = useState(false);
@@ -147,7 +148,7 @@ export default function GiftRoom() {
             try {
                 const res = await axios.get(`/room-content`, {
                     params: {
-                        room_id
+                        room_id: roomId
                     }
                 });
 
@@ -166,58 +167,63 @@ export default function GiftRoom() {
 
         setLoading(true);
         fetchData();
-    }, [room_id]);
+    }, [roomId]);
 
     return (
-        <PageBackground>
-            <ContentContainer>
-                <RoomInfoWrapper>
-                    <Title2 />
-                    <h2>{!loading && roomData.room_name }<RoomDate>{!loading && calculateDate()}</RoomDate></h2>
-                </RoomInfoWrapper>
-                <DisplayBox>
-                    {!loading && (
-                    <>
-                        <ItemBox 
-                            width={1200}
-                            height={720}
-                            style={{ justifyContent: "end" }}
-                            messages={roomData.messages}
-                            presents={roomData.presents}
-                        />
-                    </>
-                    )}
-                </DisplayBox>
-            </ContentContainer>
-            <SideBar>
-                <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ ICON_RESOURCE_PATH + '/Button_CopyLink.png' }/>
-                <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={ ICON_RESOURCE_PATH + '/Button_congrats.png'}/>
-            </SideBar>
-            <Modal
-            visible={celebrationVisible}
-            onClose={() => setCelebrationVisible(false)}
-            style={{display: 'flex', justifyContent: 'spaceEvenly', borderRadius: '20px', border: '3px solid #C49DE7', minHeight: '600px', minWidth: '1200px'}}
+        <ItemEventProvider>
+            <PageBackground>
+                <ContentContainer>
+                    <RoomInfoWrapper>
+                        <Title2 />
+                        <h2>{!loading && roomData.room_name }<RoomDate>{!loading && calculateDate()}</RoomDate></h2>
+                    </RoomInfoWrapper>
+                    <DisplayBox>
+                        {!loading && (
+                        <>
+                            <ItemBox 
+                                width={1200}
+                                height={720}
+                                style={{ justifyContent: "end" }}
+                                messages={roomData.messages}
+                                presents={roomData.presents}
+                            />
+                        </>
+                        )}
+                    </DisplayBox>
+                </ContentContainer>
+                <SideBar>
+                    <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ ICON_RESOURCE_PATH + '/Button_CopyLink.png' }/>
+                    <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={ ICON_RESOURCE_PATH + '/Button_congrats.png'}/>
+                </SideBar>
+                <Modal
+                visible={celebrationVisible}
+                onClose={() => setCelebrationVisible(false)}
+                style={{display: 'flex', justifyContent: 'spaceEvenly', borderRadius: '20px', border: '3px solid #C49DE7', minHeight: '600px', minWidth: '1200px'}}
+                    >
+                    <Button onClick={showMessageForm} style={WriteMessageButtonStyle}>메시지 남기기</Button>
+                    <Button onClick={showPresentForm} style={WriteMessageButtonStyle}>선물 남기기</Button>
+                </Modal>
+                <Modal
+                    visible={messageFormVisible}
+                    onClose={setMessageFormVisible}
+                    width='800px'
+                    height='800px'
+                    style={{ display: 'inline-block', backgroundColor: 'linear-gradient(68deg, #FF62B7 14.39%, #9F53FF 79.59%)', borderRadius: '20px', border: '3px solid #C49DE7'}}
                 >
-                <Button onClick={() => showMessageForm()} style={WriteMessageButtonStyle}>메시지 남기기</Button>
-                <Button onClick={() => showPresentForm()} style={WriteMessageButtonStyle}>선물 남기기</Button>
-            </Modal>
-            <Modal
-                visible={messageFormVisible}
-                onClose={setMessageFormVisible}
-                width='800px'
-                height='800px'
-                style={{ display: 'inline-block', backgroundColor: 'linear-gradient(68deg, #FF62B7 14.39%, #9F53FF 79.59%)', borderRadius: '20px', border: '3px solid #C49DE7'}}
-            >
-                <MessageSendForm onSubmit={() => setMessageFormVisible(false)}/>
-            </Modal>
-            <Modal
-            visible={presentFormVisible}
-            onClose={setPresentFormVisible}
-            width='1200px'
-            style={{ backgroundColor: 'RGBA(255,246,246, 1)', borderRadius: '20px', border: '3px solid #C49DE7',}}
-            >
-                <PresentSendForm onSubmit={() => setPresentFormVisible(false)}/>
-            </Modal>
-        </PageBackground>
+                    <MessageSendForm onSubmit={(sender) => {
+                        
+                        setMessageFormVisible(false);
+                    }} />
+                </Modal>
+                <Modal
+                    visible={presentFormVisible}
+                    onClose={setPresentFormVisible}
+                    width='1200px'
+                    style={{ backgroundColor: 'RGBA(255,246,246, 1)', borderRadius: '20px', border: '3px solid #C49DE7',}}
+                >
+                    <PresentSendForm onSubmit={() => setPresentFormVisible(false)} />
+                </Modal>
+            </PageBackground>
+        </ItemEventProvider>
     );
 }
