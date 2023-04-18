@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import Matter from "matter-js";
+import Matter, { Body } from "matter-js";
 import { ItemEventContext } from "../../../context/ItemEventProvider";
 
 const WALL_THICKNESS = 500;
@@ -193,6 +193,11 @@ export default function ItemBox({
             gameObjects.forEach(([item, textElement]) => {
                 textElement.style.top = item.position.y + top + LABEL_DISTANCE_Y_DELTA + "px";
                 textElement.style.left = item.position.x + left + LABEL_DISTANCE_X_DELTA + "px";
+
+                if (item.position.y > 1200 || item.position.x < 0 || item.position.x > width) {
+                    console.log('isOut');
+                    Body.setPosition(item, { x: width/2, y: 50 });
+                }
             })
         })
 
