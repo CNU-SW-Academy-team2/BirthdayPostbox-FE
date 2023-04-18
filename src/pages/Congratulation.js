@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ItemBox, Title2 } from "../components/domain";
 import { Modal } from "../components";
+import { ItemEventProvider } from "../context/ItemEventProvider";
 
 const PageBackground = styled.div`
     width: 100%;
@@ -29,7 +30,7 @@ const DisplayBox = styled.div`
 
 
 export default function Congratulation() {
-    const { room_id, owner_code } = useParams();
+    const { roomId, ownerCode } = useParams();
     const navigate = useNavigate();
 
     const [roomLoading, setRoomLoading] = useState(true);
@@ -63,7 +64,7 @@ export default function Congratulation() {
             try {
                 const res = await axios.get(`/room-content`, {
                     params: {
-                        room_id
+                        room_id: roomId
                     }
                 });
 
@@ -81,7 +82,7 @@ export default function Congratulation() {
         }
         setRoomLoading(true);
         fetchData();
-    }, [room_id]);
+    }, [roomId]);
 
     const handleSelectMessage = async (id) => {
         setItemDetailsLoading(true);
@@ -90,7 +91,7 @@ export default function Congratulation() {
             const res = await axios.get('/message', {
                 params: {
                     id,
-                    owner_code
+                    owner_code: ownerCode
                 }
             });
             if (res.status === 200) {
@@ -113,7 +114,7 @@ export default function Congratulation() {
             const res = await axios.get('/present', {
                 params: {
                     id,
-                    owner_code
+                    owner_code: ownerCode
                 }
             });
             if (res.status === 200) {
@@ -130,67 +131,69 @@ export default function Congratulation() {
     }
 
     return (
-        <PageBackground>
-            <ContentContainer>
-                <Title2 />
-                <DisplayBox>
-                    {!roomLoading && (
-                    <>
-                        <ItemBox 
-                            width={1200}
-                            height={720}
-                            style={{ justifyContent: "end" }}
-                            messages={roomData.messages}
-                            presents={roomData.presents}
-                            onSelectMessage={handleSelectMessage}
-                            onSelectPresent={handleSelectPresent}
-                        />
-                    </>
-                    )}
-                </DisplayBox>
-                <Modal
-                    visible={messageDetailVisible}
-                    onClose={setMessageDetailVisible}
-                >
-                        {itemDetailsLoading ? (
-                            <div>
-                                loading중...
-                            </div>
-                        ): (
-                            <div>
-                                <div>
-                                    messageSender: {messageDetails.message_sender}
-                                </div>
-                                <div>
-                                    messageContent: {messageDetails.message_content}
-                                </div>
-                            </div>
+        <ItemEventProvider>
+            <PageBackground>
+                <ContentContainer>
+                    <Title2 />
+                    <DisplayBox>
+                        {!roomLoading && (
+                        <>
+                            <ItemBox 
+                                width={1200}
+                                height={720}
+                                style={{ justifyContent: "end" }}
+                                messages={roomData.messages}
+                                presents={roomData.presents}
+                                onSelectMessage={handleSelectMessage}
+                                onSelectPresent={handleSelectPresent}
+                            />
+                        </>
                         )}
+                    </DisplayBox>
+                    <Modal
+                        visible={messageDetailVisible}
+                        onClose={setMessageDetailVisible}
+                    >
+                            {itemDetailsLoading ? (
+                                <div>
+                                    loading중...
+                                </div>
+                            ): (
+                                <div>
+                                    <div>
+                                        messageSender: {messageDetails.message_sender}
+                                    </div>
+                                    <div>
+                                        messageContent: {messageDetails.message_content}
+                                    </div>
+                                </div>
+                            )}
 
-                </Modal>
-                <Modal
-                    visible={presentDetailVisible}
-                    onClose={setPresentDetailVisible}
-                >
-                        {itemDetailsLoading ? (
-                            <div>
-                                loading중...
-                            </div>
-                        ): (
-                            <div>
+                    </Modal>
+                    <Modal
+                        visible={presentDetailVisible}
+                        onClose={setPresentDetailVisible}
+                    >
+                            {itemDetailsLoading ? (
                                 <div>
-                                    presentSender: {presentDetails.present_sender}
+                                    loading중...
                                 </div>
+                            ): (
                                 <div>
-                                    presentContent: {presentDetails.present_content}
+                                    <div>
+                                        presentSender: {presentDetails.present_sender}
+                                    </div>
+                                    <div>
+                                        presentContent: {presentDetails.present_content}
+                                    </div>
+                                    <div>
+                                        presentImgUrl: {presentDetails.present_img_url}
+                                    </div>
                                 </div>
-                                <div>
-                                    presentImgUrl: {presentDetails.present_img_url}
-                                </div>
-                            </div>
-                        )}
-                </Modal>
-            </ContentContainer>
-        </PageBackground>
+                            )}
+                    </Modal>
+                </ContentContainer>
+            </PageBackground>
+        </ItemEventProvider>
     );
 }
