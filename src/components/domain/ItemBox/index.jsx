@@ -7,10 +7,13 @@ const LABEL_DISTANCE_X_DELTA = -45;
 const LABEL_DISTANCE_Y_DELTA = 50;
 const ADDITIONAL_WALL_HEIGHT = 0;
 const RESOURCE_PATH = process.env.PUBLIC_URL + "/contents-design-birthday";
+const RESTITUTION = 0.7;    // limit: 0 ~ 1
+const ANGULARSPEED = 1;
 
 export default function ItemBox({
     width = 600,
     height = 600,
+    scale = 1,
     backgroundColor = "transparent",
     wallColor = "transparent",
     messages = [],
@@ -94,33 +97,26 @@ export default function ItemBox({
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
             const randomAngle = Math.random();
 
-            const textElement = document.createElement('div');
-            textElement.className = "userSelectNone"
-            textElement.innerText = message_sender;
 
-            textElement.style.position = 'absolute';
-            textElement.style.top = 30 + LABEL_DISTANCE_X_DELTA + 'px';
-            textElement.style.left = randomX + LABEL_DISTANCE_Y_DELTA + 'px';
-            textElement.style.fontSize = '20px';
-            textElement.style.color = 'black';
 
-            const message = Bodies.circle(randomX, 30, 50, {
+            const message = Bodies.circle(randomX, 30, 50 * scale, {
                 id: message_id,
                 label: "message",
-                restitution: 0.9, 
-                friction: 1,
+                restitution: RESTITUTION, 
+                friction: 0,
                 angle: randomAngle,
-                angularSpeed: 3,
+                angularSpeed: ANGULARSPEED,
                 render: {
                     sprite: {
                         texture: RESOURCE_PATH + "/basiccake.png",
-                        xScale: 0.3,
-                        yScale: 0.3
+                        xScale: 0.3 * scale,
+                        yScale: 0.3 * scale
                     }
                 }
             });
-            gameObjects.push([message, textElement]);
-            document.body.appendChild(textElement);
+            if (message_sender) {
+                attachLabel(message, message_sender, randomX);
+            }
             World.add(engine.world, message);
         }
 
@@ -128,42 +124,35 @@ export default function ItemBox({
         for (const { present_id, present_sender } of presents) {
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
             const randomAngle = Math.random();
-            const textElement = document.createElement('div');
-            textElement.className = "userSelectNone"
-            textElement.innerText = present_sender;
 
-            textElement.style.position = 'absolute';
-            textElement.style.top = 30 + LABEL_DISTANCE_X_DELTA + 'px';
-            textElement.style.left = randomX + LABEL_DISTANCE_Y_DELTA + 'px';
-            textElement.style.fontSize = '20px';
-            textElement.style.color = 'black';
 
             const sprite = randomX & 1 ? {
                 texture: RESOURCE_PATH + "/giftbox_green.png",
-                xScale: 0.4,
-                yScale: 0.4
+                xScale: 0.4 * scale,
+                yScale: 0.4 * scale
             } : {
                 texture: RESOURCE_PATH + "/giftbox_red.png",
-                xScale: 0.3,
-                yScale: 0.3
+                xScale: 0.3 * scale,
+                yScale: 0.3 * scale
             };
 
-            const present = Bodies.circle(randomX, 30, 50, {
+            const present = Bodies.circle(randomX, 30, 50 * scale, {
                 id: present_id,
                 label: "present",
-                restitution: 0.9, 
-                friction: 1,
+                restitution: RESTITUTION, 
+                friction: 0,
                 angle: randomAngle,
-                angularSpeed: 3,
+                angularSpeed: ANGULARSPEED,
                 render: {
                     sprite
                 }
             });
-            gameObjects.push([present, textElement]);
-            document.body.appendChild(textElement);
+
+            if (present_sender) {
+                attachLabel(present, present_sender, randomX);
+            }
             World.add(engine.world, present);
         }
-        
         
         const canvas = canvasRef.current;
         const mouse = Matter.Mouse.create(canvas);
@@ -229,6 +218,22 @@ export default function ItemBox({
             }
             
         }
+
+        const attachLabel = (item, text, x) => {
+            const textElement = document.createElement('div');
+            textElement.className = "userSelectNone"
+            textElement.innerText = text;
+
+            textElement.style.position = 'absolute';
+            textElement.style.top = 30 + LABEL_DISTANCE_X_DELTA + 'px';
+            textElement.style.left = x + LABEL_DISTANCE_Y_DELTA + 'px';
+            textElement.style.fontSize = '20px';
+            textElement.style.color = 'black';
+
+            gameObjects.push([item, textElement]);
+            document.body.appendChild(textElement);
+        };
+
         document.addEventListener('dblclick', handleDoubleClick);
 
         handleAddMessage && handleAddMessage();
