@@ -4,3 +4,4 @@ export { default as MessageSendForm } from './MessageSendForm';
 export { default as DateInput } from './DateInput';
 export { Title2 } from './Title';
 export { default as ItemBox } from './ItemBox';
+export { default as ImageRadioGroup } from './ImageRadioGroup'; 

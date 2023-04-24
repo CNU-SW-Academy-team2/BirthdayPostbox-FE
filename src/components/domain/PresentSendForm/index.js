@@ -20,8 +20,8 @@ const Wrapper = styled.div`
 `;
 
 const UploadBox = styled.div`
-    display: flex;
-    height: 699px;
+    display: inline-block;
+    height: 599px;
     width: 400px;
     border: 3px dashed #1E77CC;
     font-size: 24px;
@@ -68,6 +68,23 @@ const SubmitButton = styled.button`
         cursor: pointer;
         background-color: #986bc2;
     }
+`;
+
+const Icon = styled.img`
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    cursor: pointer;
+`;
+
+const IconAnchor = styled.a`
+    display: block;
+    color: black;
+    text-decoration: none;
+    border: 1px solid black;
+    margin-top: 32px;
+    text-align: center;
 `;
 
 export default function PresentSendForm({ onSubmit }) {
@@ -171,6 +188,10 @@ export default function PresentSendForm({ onSubmit }) {
                                 )}
                         </UploadBox>}
                     </Upload>
+                    <IconAnchor href='https://gift.kakao.com/home' target='_black'>
+                        <Icon alt='카카오톡 링크' src={process.env.PUBLIC_URL + "/icon/kakaotalk.png"} />
+                        <div style={{ display: "inline-block" }}>기프티콘은 어떠세요?</div>
+                    </IconAnchor>
                 </Wrapper>
                 <Wrapper>
                      <Text block>작성자</Text>
