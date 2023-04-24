@@ -13,6 +13,11 @@ import { ItemEventProvider } from "../context/ItemEventProvider";
 const PageWrapper = styled.div`
 `;
 
+const PreviewBackground = styled.div`
+    height: 720px;
+    background-color: beige;
+`;
+
 const FormBox = styled.form`
     position: flex;
     width: 80%;
@@ -112,9 +117,15 @@ export default function CreateRoom() {
     const [maxDate, setMaxDate] = useState(); 
     const [page, setPage] = useState(0);
 
+    const [roomName, setRoomName] = useState("");
+    const [date, setDate] = useState("");
+    const [email, setEmail] = useState("");
     const [backgroundStyle, setBackgroundStyle] = useState(null);
     const [messageStyle, setMessageStyle] = useState(null);
     const [presentStyle, setPresentStyle] = useState(null);
+
+    const [previewMessages, setPreviewMessages] = useState([]);
+    const [previewPresents, setPreviewPresents] = useState([]);
 
     useEffect(() => {
         const maxDate = new Date();
@@ -125,6 +136,14 @@ export default function CreateRoom() {
         minDate.setDate(minDate.getDate() + 1);
         setMinDate(minDate.toISOString().slice(0, 10));
 
+        const messages = [];
+        const presents = [];
+        for (let i = 0; i < 20; i++) {
+            messages.push({ message_id: `m${i}`, message_sender: "" });
+            presents.push({ present_id: `p${i}`, present_sender: "" });
+        }
+        setPreviewMessages(messages);
+        setPreviewPresents(presents);
     }, []);
 
     const { values, isLoading, errors, handleChange, handleSubmit } = useForm({
@@ -221,7 +240,7 @@ export default function CreateRoom() {
                                 name="roomName"
                                 type="text"
                                 placeholder="방 이름을 입력해주세요."
-                                onChange={handleChange}
+                                onChange={(e) => { handleChange(e); setRoomName(e.target.value) }}
                                 maxlength = "10"
                                 style={{width:200, height:30, fontSize: 20}}
                             />
@@ -234,7 +253,7 @@ export default function CreateRoom() {
                                 type="date"
                                 min={minDate}
                                 max={maxDate}
-                                onChange={handleChange}
+                                onChange={(e) => { handleChange(e); setDate(e.target.value) }}
                             />
                             <ErrorMessage>{errorMessage.roomBirthdate}</ErrorMessage>
                         </InputWrapper>
@@ -245,7 +264,7 @@ export default function CreateRoom() {
                                 type="email"
                                 label="선물을 받는 사람의 이메일을 입력해주세요."
                                 placeholder="선물을 받는 사람의 이메일을 입력해주세요."
-                                onChange={handleChange}
+                                onChange={(e) => { handleChange(e); setEmail(e.target.value) }}
                                 style={{width:400, height:30, fontSize: 20}}
                             />
                             <ErrorMessage>{errorMessage.roomEmail}</ErrorMessage>
@@ -279,28 +298,32 @@ export default function CreateRoom() {
                         <StyledTitle>미리보기</StyledTitle>
                         <div>
                         
-                            <div>
+                            <PreviewBackground>
+                                <Title2 />
+                                <h1>{roomName}</h1>
                                 <div>
-                                    <div style={{ width: 600, height: 360, backgroundColor: "black", margin: "0 auto" }}>{
-                                        page === 2 ? (
-                                                <div />
-                                            ) : (
+                                    <div style={{ width: 800, height: 480, backgroundColor: "black", margin: "0 auto" }}>
+                                        {
+                                            page === 2 ? (
                                                 <ItemEventProvider>
                                                     <ItemBox 
-                                                        width={600}
-                                                        height={360}
+                                                        width={800}
+                                                        height={480}
+                                                        scale={0.7}
                                                         style={{ justifyContent: "end" }}
                                                         messages={previewMessages}
                                                         presents={previewPresents}
                                                     />
                                                 </ItemEventProvider>
+                                            ) : (
+                                                <div />
                                             )
                                         }
                                     </div>
                                 </div>
-                            </div>
+                            </PreviewBackground>
                         </div>
-                        <Button variant="contained" type="submit" theme={ButtonTheme} sx={{ width: 200, padding: 1, margin: 2, fontSize: 20}} disabled={isLoading} onClick={handleCheckPage1}> {isLoading ? <Spinner /> : "방 생성하기" }</Button>
+                        <Button variant="contained" type="submit" theme={ButtonTheme} sx={{ width: 200, padding: 1, margin: 2, fontSize: 20}} disabled={isLoading && (page === 2)} onClick={handleCheckPage1} > {isLoading ? <Spinner /> : "방 생성하기" }</Button>
                     </div>
                 </Spacer>
             </FormBox>
@@ -310,28 +333,6 @@ export default function CreateRoom() {
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
 
-const previewMessages = [
-    {message_id: "1", message_sender: "" },
-    {message_id: "1", message_sender: "" },
-    {message_id: "1", message_sender: "" },
-    {message_id: "1", message_sender: "" },
-    {message_id: "1", message_sender: "" },
-    {message_id: "1", message_sender: "" },
-    {message_id: "1", message_sender: "" },
-    {message_id: "1", message_sender: "" },
-]
-
-const previewPresents = [
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-    {present_id: "2", present_sender: "" },
-]
 const backgroundList = [
     {
         src: PUBLIC_URL + "/contents-design-birthday/basiccake.png",
