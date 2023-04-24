@@ -7,8 +7,9 @@ const LABEL_DISTANCE_X_DELTA = -45;
 const LABEL_DISTANCE_Y_DELTA = 50;
 const ADDITIONAL_WALL_HEIGHT = 0;
 const RESOURCE_PATH = process.env.PUBLIC_URL + "/contents-design-birthday";
-const RESTITUTION = 0.7;    // limit: 0 ~ 1
+const RESTITUTION = 0.6;    // limit: 0 ~ 1
 const ANGULARSPEED = 1;
+const FRICTION = 1;
 
 export default function ItemBox({
     width = 600,
@@ -92,6 +93,21 @@ export default function ItemBox({
 
         World.add(engine.world, [floor, leftWall, rightWall, ceiling]);
 
+        const attachLabel = (item, text, x) => {
+            const textElement = document.createElement('div');
+            textElement.className = "userSelectNone"
+            textElement.innerText = text;
+
+            textElement.style.position = 'absolute';
+            textElement.style.top = 30 + LABEL_DISTANCE_X_DELTA + 'px';
+            textElement.style.left = x + LABEL_DISTANCE_Y_DELTA + 'px';
+            textElement.style.fontSize = '20px';
+            textElement.style.color = 'black';
+
+            gameObjects.push([item, textElement]);
+            document.body.appendChild(textElement);
+        };
+
         // 메시지 아이템 생성
         for (const { message_id, message_sender } of messages) {
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
@@ -103,7 +119,7 @@ export default function ItemBox({
                 id: message_id,
                 label: "message",
                 restitution: RESTITUTION, 
-                friction: 0,
+                friction: FRICTION,
                 angle: randomAngle,
                 angularSpeed: ANGULARSPEED,
                 render: {
@@ -140,7 +156,7 @@ export default function ItemBox({
                 id: present_id,
                 label: "present",
                 restitution: RESTITUTION, 
-                friction: 0,
+                friction: FRICTION,
                 angle: randomAngle,
                 angularSpeed: ANGULARSPEED,
                 render: {
@@ -218,21 +234,6 @@ export default function ItemBox({
             }
             
         }
-
-        const attachLabel = (item, text, x) => {
-            const textElement = document.createElement('div');
-            textElement.className = "userSelectNone"
-            textElement.innerText = text;
-
-            textElement.style.position = 'absolute';
-            textElement.style.top = 30 + LABEL_DISTANCE_X_DELTA + 'px';
-            textElement.style.left = x + LABEL_DISTANCE_Y_DELTA + 'px';
-            textElement.style.fontSize = '20px';
-            textElement.style.color = 'black';
-
-            gameObjects.push([item, textElement]);
-            document.body.appendChild(textElement);
-        };
 
         document.addEventListener('dblclick', handleDoubleClick);
 
