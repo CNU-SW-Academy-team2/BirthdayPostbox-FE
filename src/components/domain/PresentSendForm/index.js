@@ -188,7 +188,7 @@ export default function PresentSendForm({ onSubmit }) {
                                 )}
                         </UploadBox>}
                     </Upload>
-                    <IconAnchor href='https://gift.kakao.com/home'>
+                    <IconAnchor href='https://gift.kakao.com/home' target='_black'>
                         <Icon alt='카카오톡 링크' src={process.env.PUBLIC_URL + "/icon/kakaotalk.png"} />
                         <div style={{ display: "inline-block" }}>기프티콘은 어떠세요?</div>
                     </IconAnchor>
