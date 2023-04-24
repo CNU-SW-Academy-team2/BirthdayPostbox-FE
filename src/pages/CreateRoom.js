@@ -7,7 +7,8 @@ import useForm from "../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
-import { ImageRadioGroup, Title2 } from "../components/domain";
+import { ImageRadioGroup, Title2, ItemBox } from "../components/domain";
+import { ItemEventProvider } from "../context/ItemEventProvider";
 
 const PageWrapper = styled.div`
 `;
@@ -153,6 +154,7 @@ export default function CreateRoom() {
                 throw new Error(`방 생성 API 전송 오류`);   // 방 5회 이상 생겼을 경우
             } catch (e) {
                 setErrorMessage("해당 이메일로 더 이상 방을 생성할 수 없습니다.");
+                setPage(0);
             }
         },
         validate: ({ roomName, roomEmail, roomBirthdate }) => {
@@ -193,12 +195,15 @@ export default function CreateRoom() {
     }
 
     const handleChangeBackground = (e) => {
+        handleChange(e);
         setBackgroundStyle(e.target.value);
     }
     const handleChangeMessage = (e) => {
+        handleChange(e);
         setMessageStyle(e.target.value);
     }
     const handleChangePresent = (e) => {
+        handleChange(e);
         setPresentStyle(e.target.value);
     }
     return (
@@ -272,7 +277,29 @@ export default function CreateRoom() {
                     </div>
                     <div style={{ display: page === 2 ? "block" : "none" }}>
                         <StyledTitle>미리보기</StyledTitle>
-                        <div></div>
+                        <div>
+                        
+                            <div>
+                                <div>
+                                    <div style={{ width: 600, height: 360, backgroundColor: "black", margin: "0 auto" }}>{
+                                        page === 2 ? (
+                                                <div />
+                                            ) : (
+                                                <ItemEventProvider>
+                                                    <ItemBox 
+                                                        width={600}
+                                                        height={360}
+                                                        style={{ justifyContent: "end" }}
+                                                        messages={previewMessages}
+                                                        presents={previewPresents}
+                                                    />
+                                                </ItemEventProvider>
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <Button variant="contained" type="submit" theme={ButtonTheme} sx={{ width: 200, padding: 1, margin: 2, fontSize: 20}} disabled={isLoading} onClick={handleCheckPage1}> {isLoading ? <Spinner /> : "방 생성하기" }</Button>
                     </div>
                 </Spacer>
@@ -283,6 +310,28 @@ export default function CreateRoom() {
 
 const PUBLIC_URL = process.env.PUBLIC_URL;
 
+const previewMessages = [
+    {message_id: "1", message_sender: "" },
+    {message_id: "1", message_sender: "" },
+    {message_id: "1", message_sender: "" },
+    {message_id: "1", message_sender: "" },
+    {message_id: "1", message_sender: "" },
+    {message_id: "1", message_sender: "" },
+    {message_id: "1", message_sender: "" },
+    {message_id: "1", message_sender: "" },
+]
+
+const previewPresents = [
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+    {present_id: "2", present_sender: "" },
+]
 const backgroundList = [
     {
         src: PUBLIC_URL + "/contents-design-birthday/basiccake.png",
