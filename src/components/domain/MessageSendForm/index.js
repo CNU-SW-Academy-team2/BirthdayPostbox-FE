@@ -11,6 +11,10 @@ const SubmitButton = styled.button`
     border: none;
     border-radius: 2px;
     margin: auto auto;
+    width : 150px;
+    height : 40px;
+    font-size : 20px;
+    font-family : NanumNeoB;
     
     &:hover {
         cursor: pointer;
@@ -20,8 +24,13 @@ const SubmitButton = styled.button`
 
 const SenderInput = styled.input`
     display: block;
-    width: 99%;
+    width: 60%;
+    height : 30px;
     border: 1.5px solid #BD97E0;
+    margin : auto;
+    margin-top : 20px;
+    font-size : 18px;
+    text-align : center;
 
     &:focus {
         outline: 1.5px solid #986bc2;
@@ -29,17 +38,41 @@ const SenderInput = styled.input`
 `;
 
 const TextBox = styled.div`
-    height: 60vh;
-    font-size: 13px;
+    width : 60%;
+    height: 400px;
+    font-size: 20px;
+    margin : auto;
+    margin-top : 20px;
+    margin-bottom : 20px;
+    padding : 10px;
     border: 1.5px solid #BD97E0;
     overflow: auto;
     &:focus {
         outline: 1.5px solid #986bc2;
     }
+    text-align : center;
+ 
 
     &:empty:before {
         content: attr(placeholder);
     }
+`;
+
+const ModalBox = styled.div`
+    text-align : center;
+    height: 10px;
+`;
+
+const MessageBox = styled.div`
+    background-image: url('${process.env.PUBLIC_URL}/message-design/message2.png');
+    background-repeat: no-repeat;
+    background-position: top center;
+    height : 800px;
+`;
+
+const FormBox = styled.div`
+    flex-direction : column;
+    padding: 110px 0 0 0 ;
 `;
 
 export default function MessageSendForm({ onSubmit }) {
@@ -92,28 +125,34 @@ export default function MessageSendForm({ onSubmit }) {
     });
 
     return (
-        <div>
-                <Header level={2}>메시지 작성하기</Header>
-                <form onSubmit={handleSubmit}>
-                    <Text>작성자</Text>
-                    <SenderInput
-                        type='text'
-                        placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
-                        name='sender'
-                        onChange={(e) => {handleChange(e); setSender(e.target.value)}}
-                        value={sender}
-                    />
-                    <Spacer />
-                    <Text block>메시지 남기기</Text>
-                    <TextBox
-                        placeholder="당신의 마음을 표현해주세요!"
-                        contentEditable
-                        onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
-                        ref={contentRef}
-                    />
-                    { isLoading ? <Spinner /> : <SubmitButton>제출하기</SubmitButton>}
-                    {errors.content}
-                </form>
-        </div>
+        <ModalBox>
+            <Header level={2} style = {{fontFamily : "NanumNeoB"}}>메시지 작성하기</Header>
+            <MessageBox>
+                <FormBox>
+                    <form onSubmit={handleSubmit}>
+                            <Text style = {{fontFamily : "NanumNeoB", fontSize : "25px"}}>작성자</Text>
+                            <SenderInput
+                                type='text'
+                                placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
+                                name='sender'
+                                onChange={(e) => {handleChange(e); setSender(e.target.value)}}
+                                value={sender}
+                                style = {{fontFamily : "NanumNeoB"}}
+                            />
+                            <Spacer />
+                            <Text block style = {{fontFamily : "NanumNeoB", fontSize : "25px"}}>메시지 남기기</Text>
+                            <TextBox
+                                placeholder="당신의 마음을 표현해주세요!"
+                                contentEditable
+                                onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
+                                ref={contentRef}
+                                style = {{fontFamily : "NanumNeoB"}}
+                            />
+                            { isLoading ? <Spinner /> : <SubmitButton>제출하기</SubmitButton>}
+                            {errors.content}
+                    </form>
+                </FormBox>
+            </MessageBox>
+        </ModalBox>
     );
 }
