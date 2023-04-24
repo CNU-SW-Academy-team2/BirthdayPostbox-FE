@@ -89,12 +89,14 @@ const WriteMessageButtonStyle = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-
-    '&:hover': {
-        backgroundColor: '#A86DD7'
-    }
 };
 
+const ButtonWrapper = styled.div`
+
+    &:hover {
+        cursor: pointer;
+    }
+`;
 export default function GiftRoom() {
     const { roomId } = useParams();
     const [celebrationVisible, setCelebrationVisible] = useState(false);
@@ -203,12 +205,12 @@ export default function GiftRoom() {
                 onClose={() => setCelebrationVisible(false)}
                 style={{display: 'flex', justifyContent: 'spaceEvenly', borderRadius: '20px', border: '3px solid #C49DE7', minHeight: '600px', minWidth: '1200px'}}
                     >
-                    <div style={WriteMessageButtonStyle}>
+                    <ButtonWrapper style={WriteMessageButtonStyle}>
                         <img  alt="Button" width = '175' height = '200' onClick={() => showMessageForm()} src={ ICON_RESOURCE_PATH + '/Button_message.png' }/>
-                    </div>
-                    <div style={WriteMessageButtonStyle}>
+                    </ButtonWrapper>
+                    <ButtonWrapper style={WriteMessageButtonStyle}>
                         <img  alt="Button" width = '175' height = '200' onClick={() => showPresentForm()} src={ ICON_RESOURCE_PATH + '/Button_present.png' }/>
-                    </div>
+                    </ButtonWrapper>
                 </Modal>
                 <Modal
                     visible={messageFormVisible}
