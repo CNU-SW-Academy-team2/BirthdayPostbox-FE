@@ -89,6 +89,7 @@ export default function ItemBox({
 
         World.add(engine.world, [floor, leftWall, rightWall, ceiling]);
 
+        // 메시지 아이템 생성
         for (const { message_id, message_sender } of messages) {
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
             const randomAngle = Math.random();
@@ -123,6 +124,7 @@ export default function ItemBox({
             World.add(engine.world, message);
         }
 
+        // 선물 아이템 생성
         for (const { present_id, present_sender } of presents) {
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
             const randomAngle = Math.random();
@@ -166,6 +168,7 @@ export default function ItemBox({
         const canvas = canvasRef.current;
         const mouse = Matter.Mouse.create(canvas);
 
+        // 마우스로 아이템을 움직일 수 있게 해줌
         const mouseConstraint = Matter.MouseConstraint.create(engine, {
             mouse,
             constraint: {
@@ -176,6 +179,7 @@ export default function ItemBox({
             }
         });
 
+        // 아이템에 마우스 오버 시 grab이라는 클래스를 추가해 css 효과를 받도록 함
         Matter.Events.on(mouseConstraint, "mousemove", (e) => {
             const mousePosition = e.mouse.position;
             const clickedBodies = Matter.Query.point(engine.world.bodies, mousePosition);
@@ -190,12 +194,12 @@ export default function ItemBox({
         Matter.Events.on(engine, "beforeUpdate", (e) => {
             const { left, top } = canvas.getBoundingClientRect();
 
-            gameObjects.forEach(([item, textElement]) => {
+            gameObjects.forEach(([item, textElement]) => {  // sender 요소 위치 업데이트
                 textElement.style.top = item.position.y + top + LABEL_DISTANCE_Y_DELTA + "px";
                 textElement.style.left = item.position.x + left + LABEL_DISTANCE_X_DELTA + "px";
 
+                // 아이템이 canvas를 탈출 시 다시 원위치로 옮김
                 if (item.position.y > 1200 || item.position.x < 0 || item.position.x > width) {
-                    console.log('isOut');
                     Body.setPosition(item, { x: width/2, y: 50 });
                 }
             })
@@ -213,6 +217,8 @@ export default function ItemBox({
             const x = e.clientX - left;
             const y = e.clientY - top;
             const bodies = Matter.Query.point(engine.world.bodies, { x, y });
+
+            // 더블클릭한 위치에 아이템이 존재한다면 id에 따라 이벤트
             if (bodies[0]) {
                 if (bodies[0].label === "message" && onSelectMessage) {
                     onSelectMessage(bodies[0].id);
@@ -223,14 +229,14 @@ export default function ItemBox({
             }
             
         }
-        document?.addEventListener('dblclick', handleDoubleClick);
+        document.addEventListener('dblclick', handleDoubleClick);
 
         handleAddMessage && handleAddMessage();
         handleAddPresent && handleAddPresent();
         
         return () => {
-            document?.removeEventListener('dblclick', handleDoubleClick);
-            document.querySelectorAll(".userSelectNone").forEach((element) => element.remove());
+            document.removeEventListener('dblclick', handleDoubleClick);
+            document.querySelectorAll(".userSelectNone").forEach((element) => element.remove());    // useRouter()로 주소 변경 시 textElement가 사라지지 않는 경우가 있음
         }
         
     }, []);
