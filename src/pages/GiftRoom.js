@@ -86,6 +86,9 @@ const WriteMessageButtonStyle = {
     color: 'white',
     fontSize: '25px',
     borderRadius: '44.66px',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
 
     '&:hover': {
         backgroundColor: '#A86DD7'
@@ -200,14 +203,18 @@ export default function GiftRoom() {
                 onClose={() => setCelebrationVisible(false)}
                 style={{display: 'flex', justifyContent: 'spaceEvenly', borderRadius: '20px', border: '3px solid #C49DE7', minHeight: '600px', minWidth: '1200px'}}
                     >
-                    <Button onClick={showMessageForm} style={WriteMessageButtonStyle}>메시지 남기기</Button>
-                    <Button onClick={showPresentForm} style={WriteMessageButtonStyle}>선물 남기기</Button>
+                    <div style={WriteMessageButtonStyle}>
+                        <img  alt="Button" width = '175' height = '200' onClick={() => showMessageForm()} src={ ICON_RESOURCE_PATH + '/Button_message.png' }/>
+                    </div>
+                    <div style={WriteMessageButtonStyle}>
+                        <img  alt="Button" width = '175' height = '200' onClick={() => showPresentForm()} src={ ICON_RESOURCE_PATH + '/Button_present.png' }/>
+                    </div>
                 </Modal>
                 <Modal
                     visible={messageFormVisible}
                     onClose={setMessageFormVisible}
                     width='800px'
-                    height='800px'
+                    height='900px'
                     style={{ display: 'inline-block', backgroundColor: 'linear-gradient(68deg, #FF62B7 14.39%, #9F53FF 79.59%)', borderRadius: '20px', border: '3px solid #C49DE7'}}
                 >
                     <MessageSendForm onSubmit={(sender) => {
