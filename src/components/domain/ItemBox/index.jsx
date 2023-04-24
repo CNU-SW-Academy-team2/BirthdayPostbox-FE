@@ -1,15 +1,73 @@
 import { useContext, useEffect, useRef } from "react";
 import Matter, { Body } from "matter-js";
 import { ItemEventContext } from "../../../context/ItemEventProvider";
+import { CAKE_PATH, CHOCOLATE_PATH, ENVELOPE_PATH, GIFTBOX_PATH, TAFFY_PATH } from "../../../path";
 
 const WALL_THICKNESS = 500;
 const LABEL_DISTANCE_X_DELTA = -45;
 const LABEL_DISTANCE_Y_DELTA = 50;
 const ADDITIONAL_WALL_HEIGHT = 0;
-const RESOURCE_PATH = process.env.PUBLIC_URL + "/contents-design-birthday";
 const RESTITUTION = 0.6;    // limit: 0 ~ 1
 const ANGULARSPEED = 1;
 const FRICTION = 1;
+
+const IMAGE_PATH = {
+    CAKE: {
+        originPath: CAKE_PATH,
+        paths: [
+          "/chocolate.png",
+          "/fresh-berry.png",
+          "/orange.png",
+          "/strawberries1.png",
+          "/strawberries2.png",
+        ],
+        scale: 0.035,
+      },
+      CHOCOLATE: {
+        originPath: CHOCOLATE_PATH,
+        paths: [
+          "/chocolate1.png",
+          "/chocolate2.png",
+          "/chocolate3.png",
+          "/chocolate4.png",
+          "/chocolate5.png",
+        ],
+        scale: 0.2,
+      },
+      ENVELOPE: {
+        originPath: ENVELOPE_PATH,
+        paths: [
+          "/envelope1.png",
+          "/envelope2.png",
+          "/envelope3.png",
+          "/envelope4.png",
+          "/envelope5.png",
+        ],
+        scale: 0.4,
+      },
+      GIFTBOX: {
+        originPath: GIFTBOX_PATH,
+        paths: [
+          "/giftbox_1.png",
+          "/giftbox_2.png",
+          "/giftbox_3.png",
+          "/giftbox_4.png",
+          "/giftbox_5.png",
+        ],
+        scale: 0.25,
+      },
+      TAFFY: {
+        originPath: TAFFY_PATH,
+        paths: [
+          "/taffy1.png",
+          "/taffy2.png",
+          "/taffy3.png",
+          "/taffy4.png",
+          "/taffy5.png",
+        ],
+        scale: 0.2,
+      }
+};
 
 export default function ItemBox({
     width = 600,
@@ -23,6 +81,8 @@ export default function ItemBox({
     onSelectPresent,
     handleAddMessage,
     handleAddPresent,
+    messageType = "ENVELOPE",
+    presentType = "GIFTBOX",
     ...props
 }) {
     const containerRef = useRef();
@@ -31,6 +91,11 @@ export default function ItemBox({
     height += ADDITIONAL_WALL_HEIGHT;
 
     const { setEngine, gameObjects } = useContext(ItemEventContext);
+
+    const getImagePath = (type, index) => {
+        const { originPath, paths } = IMAGE_PATH[type];
+        return originPath + paths[index % paths.length];
+    }
 
     useEffect(() => {
         let Engine = Matter.Engine;
@@ -113,8 +178,6 @@ export default function ItemBox({
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
             const randomAngle = Math.random();
 
-
-
             const message = Bodies.circle(randomX, 30, 50 * scale, {
                 id: message_id,
                 label: "message",
@@ -124,9 +187,9 @@ export default function ItemBox({
                 angularSpeed: ANGULARSPEED,
                 render: {
                     sprite: {
-                        texture: RESOURCE_PATH + "/basiccake.png",
-                        xScale: 0.3 * scale,
-                        yScale: 0.3 * scale
+                        texture: getImagePath(messageType, randomX),
+                        xScale: IMAGE_PATH[messageType].scale * scale,
+                        yScale: IMAGE_PATH[messageType].scale * scale
                     }
                 }
             });
@@ -141,17 +204,6 @@ export default function ItemBox({
             const randomX = Math.floor(Math.random() * width * 0.8) + 50;
             const randomAngle = Math.random();
 
-
-            const sprite = randomX & 1 ? {
-                texture: RESOURCE_PATH + "/giftbox_green.png",
-                xScale: 0.4 * scale,
-                yScale: 0.4 * scale
-            } : {
-                texture: RESOURCE_PATH + "/giftbox_red.png",
-                xScale: 0.3 * scale,
-                yScale: 0.3 * scale
-            };
-
             const present = Bodies.circle(randomX, 30, 50 * scale, {
                 id: present_id,
                 label: "present",
@@ -160,7 +212,11 @@ export default function ItemBox({
                 angle: randomAngle,
                 angularSpeed: ANGULARSPEED,
                 render: {
-                    sprite
+                    sprite: {
+                        texture: getImagePath(presentType, randomX),
+                        xScale: IMAGE_PATH[presentType].scale * scale,
+                        yScale: IMAGE_PATH[presentType].scale * scale
+                    }
                 }
             });
 

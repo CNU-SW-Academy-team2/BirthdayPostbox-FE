@@ -36,7 +36,7 @@ const Radio = styled.input`
 `;
 
 const Image = styled.img`
-    padding: "4px 8px";
+    padding: 4px 8px;
     max-width: calc(100% - 16px);
     max-height: calc(100% - 8px);
 `;

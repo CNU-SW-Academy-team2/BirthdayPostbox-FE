@@ -9,13 +9,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { ImageRadioGroup, Title2, ItemBox } from "../components/domain";
 import { ItemEventProvider } from "../context/ItemEventProvider";
+import { BACKGROUND_PATH, CAKE_PATH, CHOCOLATE_PATH, ENVELOPE_PATH, GIFTBOX_PATH, TAFFY_PATH } from "../path";
 
 const PageWrapper = styled.div`
 `;
 
 const PreviewBackground = styled.div`
     height: 720px;
-    background-color: beige;
 `;
 
 const FormBox = styled.form`
@@ -202,7 +202,8 @@ export default function CreateRoom() {
     const handleCheckPage1 = () => {
         setErrorMessage({});
         const errors = {};
-
+        console.log(messageStyle);
+        console.log(presentStyle);
         if (!backgroundStyle) errors.backgroundStyle = "배경을 선택해주세요.";
         if (!messageStyle) errors.messageStyle = "메시지을 선택해주세요.";
         if (!presentStyle) errors.presentStyle = "선물을 선택해주세요.";
@@ -277,7 +278,7 @@ export default function CreateRoom() {
                         <StyledTitle>방 디자인 선택하기</StyledTitle>
                         <InputWrapper>
                             <StyledSubTitle>배경 선택</StyledSubTitle>
-                            <ImageRadioGroup list={backgroundList} name="background" onChange={handleChangeBackground} />
+                            <ImageRadioGroup list={backgroundList} name="background" onChange={handleChangeBackground} width={200} />
                             <ErrorMessage>{errorMessage.backgroundStyle}</ErrorMessage>
                         </InputWrapper>
                         <InputWrapper>
@@ -298,11 +299,11 @@ export default function CreateRoom() {
                         <StyledTitle>미리보기</StyledTitle>
                         <div>
                         
-                            <PreviewBackground>
+                            <PreviewBackground style={{ backgroundImage: `url(${BACKGROUND_PATH}/${backgroundStyle})`}}>
                                 <Title2 />
                                 <h1>{roomName}</h1>
                                 <div>
-                                    <div style={{ width: 800, height: 480, backgroundColor: "black", margin: "0 auto" }}>
+                                    <div style={{ width: 800, height: 480, margin: "0 auto" }}>
                                         {
                                             page === 2 ? (
                                                 <ItemEventProvider>
@@ -313,6 +314,8 @@ export default function CreateRoom() {
                                                         style={{ justifyContent: "end" }}
                                                         messages={previewMessages}
                                                         presents={previewPresents}
+                                                        messageType={messageStyle}
+                                                        presentType={presentStyle}
                                                     />
                                                 </ItemEventProvider>
                                             ) : (
@@ -331,58 +334,86 @@ export default function CreateRoom() {
     );
 }
 
-const PUBLIC_URL = process.env.PUBLIC_URL;
-
 const backgroundList = [
     {
-        src: PUBLIC_URL + "/contents-design-birthday/basiccake.png",
-        alt: "birthday",
-        value: "birthday"
+        src: BACKGROUND_PATH + "/bg_bday.png",
+        alt: "bg_bday",
+        value: "bg_bday.png"
     },
     {
-        src: PUBLIC_URL + "/contents-design-birthday/candle.png",
-        alt: "candle",
-        value: "candle"
+        src: BACKGROUND_PATH + "/bg_bold_1.png",
+        alt: "bg_bold_1",
+        value: "bg_bold_1.png"
     },
     {
-        src: PUBLIC_URL + "/contents-design-birthday/label.png",
-        alt: "label",
-        value: "label"
+        src: BACKGROUND_PATH + "/bg_bold_2.png",
+        alt: "bg_bold_2",
+        value: "bg_bold_2.png"
+    },
+    {
+        src: BACKGROUND_PATH + "/bg_bold_3.png",
+        alt: "bg_bold_3",
+        value: "bg_bold_3.png"
+    },
+    {
+        src: BACKGROUND_PATH + "/bg_xmas.png",
+        alt: "bg_xmas",
+        value: "bg_xmas.png"
     },
 ];
 
 const messageList = [
     {
-        src: PUBLIC_URL + "/contents-design-birthday/basiccake.png",
-        alt: "birthday",
-        value: "birthday"
+        src: ENVELOPE_PATH + "/envelope1.png",
+        alt: "envelope",
+        value: "ENVELOPE"
     },
     {
-        src: PUBLIC_URL + "/contents-design-birthday/candle.png",
-        alt: "candle",
-        value: "candle"
+        src: CAKE_PATH + "/strawberries1.png",
+        alt: "cake",
+        value: "CAKE"
     },
     {
-        src: PUBLIC_URL + "/contents-design-birthday/label.png",
-        alt: "label",
-        value: "label"
+        src: CHOCOLATE_PATH + "/chocolate1.png",
+        alt: "chocolate",
+        value: "CHOCOLATE"
+    },
+    {
+        src: GIFTBOX_PATH + "/giftbox_1.png",
+        alt: "giftbox",
+        value: "GIFTBOX"
+    },
+    {
+        src: TAFFY_PATH + "/taffy1.png",
+        alt: "taffy",
+        value: "TAFFY"
     },
 ];
 
 const presentList = [
     {
-        src: PUBLIC_URL + "/contents-design-birthday/basiccake.png",
-        alt: "birthday",
-        value: "birthday"
+        src: ENVELOPE_PATH + "/envelope1.png",
+        alt: "envelope",
+        value: "ENVELOPE"
     },
     {
-        src: PUBLIC_URL + "/contents-design-birthday/candle.png",
-        alt: "candle",
-        value: "candle"
+        src: CAKE_PATH + "/strawberries1.png",
+        alt: "cake",
+        value: "CAKE"
     },
     {
-        src: PUBLIC_URL + "/contents-design-birthday/label.png",
-        alt: "label",
-        value: "label"
+        src: CHOCOLATE_PATH + "/chocolate1.png",
+        alt: "chocolate",
+        value: "CHOCOLATE"
+    },
+    {
+        src: GIFTBOX_PATH + "/giftbox_1.png",
+        alt: "giftbox",
+        value: "GIFTBOX"
+    },
+    {
+        src: TAFFY_PATH + "/taffy1.png",
+        alt: "taffy",
+        value: "TAFFY"
     },
 ];
