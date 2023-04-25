@@ -129,6 +129,7 @@ export default function PresentSendForm({ onSubmit }) {
                     presentSender: sender,
                     presentContent: content,
                     presentImgUrl: "test_img_url",
+                    presentDesign: "GIFT_BOX_1"
                 });
 
                 const res = await axios.post('/new-present', jsonData, {

@@ -40,7 +40,7 @@ export const IMAGE_PATH = {
         ],
         scale: 0.2,
       },
-      GIFTBOX: {
+      GIFT_BOX: {
         originPath: GIFTBOX_PATH,
         paths: [
           "/giftbox_1.png",

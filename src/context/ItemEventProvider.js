@@ -12,7 +12,7 @@ let height = 720;
 let scale = 1;
 
 let messageType = "ENVELOPE";
-let presentType = "GIFTBOX";
+let presentType = "GIFT_BOX";
 
 const ITEM_TYPE = {
     MESSAGE: messageType,
@@ -63,7 +63,7 @@ const getImagePath = (type, index) => {
  * Matter.js의 엔진에 아이템을 추가
  * @param {string} id 
  * @param {string} sender 
- * @param {IDENTIFIER} label 
+ * @param {IDENTIFIERS} label 
  */
 function addItem(id, sender, label) {
     if (!id) id = v4();
