@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ItemBox, Title2 } from "../components/domain";
 import { Modal } from "../components";
 import { ItemEventProvider } from "../context/ItemEventProvider";
+import { BACKGROUND_PATH } from "../configs/assetConfig";
 
 const PageBackground = styled.div`
     width: 100%;
@@ -16,16 +17,11 @@ const ContentContainer = styled.div`
 `;
 
 const DisplayBox = styled.div`
-    display: flex;
     margin: 0 auto;
-    min-height: 600px;
+    min-height: 720px;
     width: 1200px;
-    background-color: white;
-    text-align: center;
     border-radius: 16px;
-    box-sizing: border-box;
     box-shadow: 6.79014px 6.79014px 20.3704px 5.43212px rgba(0, 0, 0, 0.14);
-    justify-content: space-evenly;
 `;
 
 
@@ -36,6 +32,8 @@ export default function Congratulation() {
     const [roomLoading, setRoomLoading] = useState(true);
     const [itemDetailsLoading, setItemDetailsLoading] = useState(true);
     const [messageDetailVisible, setMessageDetailVisible] = useState(false);
+    const displayBoxRef = useRef();
+
     const [messageDetails, setMessageDetail] = useState({
         message_id: "",
         message_sender: "",
@@ -55,11 +53,23 @@ export default function Congratulation() {
     const [roomData, setRoomData] = useState({
         room_name : "",
         room_date : "",
+        room_design: "",
+        message_design_category: "",
+        present_design_category: "",
         messages: [],
-        presents: []
+        presents: [],
     });
 
     useEffect(() => {
+        const beforeLoading = () => {
+            if (roomData.room_design) {
+                displayBoxRef.current.style.backgroundImage = `url(${BACKGROUND_PATH}/${roomData.room_design}.png)`;
+            }
+            else {
+                displayBoxRef.current.style.backgroundImage = `url(${BACKGROUND_PATH}/ROOM_DESIGN_1.png)`;
+            }
+        }
+
         const fetchData = async () => {
             try {
                 const res = await axios.get(`/room-content`, {
@@ -70,6 +80,7 @@ export default function Congratulation() {
 
                 if (res.status === 200) {
                     setRoomData(res.data);
+                    beforeLoading();
                     setRoomLoading(false);
                 }
                 else {
@@ -77,9 +88,11 @@ export default function Congratulation() {
                 }
 
             } catch (e) {
-                console.error(e);
+                alert("허용되지 않은 링크입니다.");
+                navigate("/");
             }
         }
+
         setRoomLoading(true);
         fetchData();
     }, [roomId]);
@@ -135,7 +148,7 @@ export default function Congratulation() {
             <PageBackground>
                 <ContentContainer>
                     <Title2 />
-                    <DisplayBox>
+                    <DisplayBox ref={displayBoxRef}>
                         {!roomLoading && (
                         <>
                             <ItemBox 
@@ -145,6 +158,8 @@ export default function Congratulation() {
                                 scale={1}
                                 messages={roomData.messages}
                                 presents={roomData.presents}
+                                messageType={roomData.message_design_category}
+                                presentType={roomData.present_design_category}
                                 onSelectMessage={handleSelectMessage}
                                 onSelectPresent={handleSelectPresent}
                             />

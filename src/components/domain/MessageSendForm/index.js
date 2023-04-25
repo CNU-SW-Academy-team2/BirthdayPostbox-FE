@@ -93,6 +93,7 @@ export default function MessageSendForm({ onSubmit }) {
                 const jsonData = JSON.stringify({
                     messageSender: sender,
                     messageContent: content,
+                    messageDesign: "ENVELOP_1",
                     roomDTO: {
                         roomId
                     }

@@ -12,6 +12,7 @@ import { ItemEventProvider } from "../context/ItemEventProvider";
 import { BACKGROUND_PATH, CAKE_PATH, CHOCOLATE_PATH, ENVELOPE_PATH, GIFTBOX_PATH, TAFFY_PATH } from "../configs/assetConfig";
 
 const PageWrapper = styled.div`
+    padding-bottom: 128px;
 `;
 
 const PreviewBackground = styled.div`
@@ -19,13 +20,13 @@ const PreviewBackground = styled.div`
 `;
 
 const FormBox = styled.form`
-    display: block;
-    position: flex;
+    display: flex;
     width: 1600px;
     margin: 0 auto;
     padding: 8px 16px;
     background-color: white;
     text-align: center;
+    justify-content: center;
     border-radius: 16px;
 
     box-sizing: border-box;
@@ -45,20 +46,6 @@ const Input = styled.input`
     }
 
 `;
-const LinkButton = styled.button`
-    background-color: #FFE2EA;
-    border-radius: 4px;
-    border: 0px;
-    padding: 10px;
-    width: 200px;
-    height: 80px;
-    font-size: 20px;
-    font-weight: bold;
-
-    &:hover {
-        cursor: pointer
-    }
-`
 
 const StyledInput = styled.input`
   padding: 0.5em;
@@ -94,11 +81,6 @@ const StyledSubTitle = styled.div`
     font-family: NanumNeoB;
     font-size: 25px;
     margin: 35px;
-`;
-
-const ListDisplayer = styled.div`
-    display: flex;
-
 `;
 
 const ButtonTheme = createTheme({
@@ -159,23 +141,18 @@ export default function CreateRoom() {
         setPreviewPresents(presents);
     }, []);
 
-    const { values, isLoading, errors, handleChange, handleSubmit } = useForm({
-        initialState: {
-            roomName: "",
-            roomBirthdate: "",
-            roomEmail: "",
-            background: "",
-            presnet: "",
-            message: ""
-        },
-        onSubmit: async ({ roomName, roomBirthdate, roomEmail }) => {
+    const { isLoading, handleChange, handleSubmit } = useForm({
+        initialState: {},
+        onSubmit: async () => {
             try {
                 const res = await axios.post("/new-room", null, {
                     params: {
-                        roomName,
-                        roomBirthdate,
-                        roomEmail,
-                        roomCategory: "BIRTHDAY"
+                        roomName: roomName,
+                        roomBirthdate: date,
+                        roomEmail: email,
+                        roomDesign: backgroundStyle,
+                        messageDesignCategory: messageStyle,
+                        presentDesignCategory: presentStyle
                     }
                 });
 
@@ -189,11 +166,15 @@ export default function CreateRoom() {
                 setPage(0);
             }
         },
-        validate: ({ roomName, roomEmail, roomBirthdate }) => {
+        validate: () => {
             const errors = {};
-            if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(roomEmail)) errors.roomEmail = "이메일 형식이 올바르지 않습니다."; // @o.cnu.ac.kr 같은 이메일은 통과가 안되니 수정필요
+            if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) errors.roomEmail = "이메일 형식이 올바르지 않습니다.";
             if (!roomName) errors.roomName = "방 이름을 입력해주세요.";
-            if (!roomBirthdate) errors.roomBirthdate = "생일을 입력해주세요.";
+            if (!date) errors.roomBirthdate = "생일을 입력해주세요.";
+            if (!backgroundStyle) errors.backgroundStyle = "배경을 선택해주세요";
+            if (!messageStyle) errors.messageStyle = "메시지을 선해주세요.";
+            if (!presentStyle) errors.presentStyle = "선물을 선택해주세요.";
+
             return errors;
         }
     });
@@ -202,9 +183,9 @@ export default function CreateRoom() {
         setErrorMessage({});
         const errors = {};
 
-        if (!values["roomName"]) errors.roomName = "방 이름을 입력해주세요.";
-        if (!values["roomBirthdate"]) errors.roomBirthdate = "생일을 입력해주세요.";
-        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(values["roomEmail"])) errors.roomEmail = "이메일 형식이 올바르지 않습니다.";
+        if (!roomName) errors.roomName = "방 이름을 입력해주세요.";
+        if (!date) errors.roomBirthdate = "생일을 입력해주세요.";
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) errors.roomEmail = "이메일 형식이 올바르지 않습니다.";
 
         if (Object.keys(errors).length === 0) {
             setPage(1);
@@ -290,17 +271,17 @@ export default function CreateRoom() {
                         <StyledTitle>방 디자인 선택하기</StyledTitle>
                         <InputWrapper>
                             <StyledSubTitle>배경 선택</StyledSubTitle>
-                            <ImageRadioGroup list={backgroundList} name="background" onChange={handleChangeBackground} />
+                            <ImageRadioGroup list={BACKGROUNDS} name="background" onChange={handleChangeBackground} />
                             <ErrorMessage>{errorMessage.backgroundStyle}</ErrorMessage>
                         </InputWrapper>
                         <InputWrapper>
                             <StyledSubTitle>메시지 선택</StyledSubTitle>
-                            <ImageRadioGroup list={messageList} name="message" onChange={handleChangeMessage}/>
+                            <ImageRadioGroup list={MESSAGES} name="message" onChange={handleChangeMessage}/>
                             <ErrorMessage>{errorMessage.messageStyle}</ErrorMessage>
                         </InputWrapper>
                         <InputWrapper>
                             <StyledSubTitle>선물 선택</StyledSubTitle>
-                            <ImageRadioGroup list={presentList} name="present" onChange={handleChangePresent} />
+                            <ImageRadioGroup list={PRESENTS} name="present" onChange={handleChangePresent} />
                             <ErrorMessage>{errorMessage.presentStyle}</ErrorMessage>
                         </InputWrapper>
                         <InputWrapper>
@@ -308,12 +289,14 @@ export default function CreateRoom() {
                         </InputWrapper>
                     </div>
                     <div style={{ display: page === 2 ? "block" : "none" }}>
-                        <StyledTitle>미리보기</StyledTitle>
+                        <StyledTitle>방 정보</StyledTitle>
                         <div>
                         
-                            <PreviewBackground style={{ display: 'block', objectFit: "contain", width: 1080, margin: '0 auto'}}>
+                            <PreviewBackground style={{ display: 'block', objectFit: "contain", width: 1080, height: 900, margin: '0 auto'}}>
                                 <PreviewInfo style={{ display: 'flex', justifyContent: 'left' }}>
-                                    <h1>{roomName}</h1>
+                                    <h2>방 이름: {roomName}</h2>
+                                    <h2>이메일 {email}</h2>
+                                    <h2>날짜: {date}</h2>
                                 </PreviewInfo>
                                 <div>
                                     <div style={{ width: 1000, height: 600, margin: "0 auto", backgroundImage: `url(${BACKGROUND_PATH}/${backgroundStyle})` }}>
@@ -339,7 +322,7 @@ export default function CreateRoom() {
                                 </div>
                             </PreviewBackground>
                         </div>
-                        <Button variant="contained" type="submit" theme={ButtonTheme} sx={{ width: 200, padding: 1, margin: 2, fontSize: 20}} disabled={isLoading && (page === 2)} onClick={handleCheckPage1} > {isLoading ? <Spinner /> : "방 생성하기" }</Button>
+                        <Button variant="contained" type="submit" theme={ButtonTheme} sx={{ width: 200, padding: 1, margin: 2, fontSize: 20 }} disabled={isLoading && (page === 2)} onClick={handleCheckPage1} > {isLoading ? <Spinner /> : "방 생성하기" }</Button>
                     </div>
                 </Spacer>
             </FormBox>
@@ -347,35 +330,35 @@ export default function CreateRoom() {
     );
 }
 
-const backgroundList = [
+const BACKGROUNDS = [
     {
-        src: BACKGROUND_PATH + "/bg_bday.png",
-        alt: "bg_bday",
-        value: "bg_bday.png"
+      src: BACKGROUND_PATH + "/ROOM_DESIGN_1.png",
+      alt: "ROOM_DESIGN_1",
+      value: "ROOM_DESIGN_1.png"
     },
     {
-        src: BACKGROUND_PATH + "/bg_bold_1.png",
-        alt: "bg_bold_1",
-        value: "bg_bold_1.png"
+      src: BACKGROUND_PATH + "/ROOM_DESIGN_2.png",
+      alt: "ROOM_DESIGN_2",
+      value: "ROOM_DESIGN_2.png"
     },
     {
-        src: BACKGROUND_PATH + "/bg_bold_2.png",
-        alt: "bg_bold_2",
-        value: "bg_bold_2.png"
+      src: BACKGROUND_PATH + "/ROOM_DESIGN_3.png",
+      alt: "ROOM_DESIGN_3",
+      value: "ROOM_DESIGN_3.png"
     },
     {
-        src: BACKGROUND_PATH + "/bg_bold_3.png",
-        alt: "bg_bold_3",
-        value: "bg_bold_3.png"
+      src: BACKGROUND_PATH + "/ROOM_DESIGN_4.png",
+      alt: "ROOM_DESIGN_4",
+      value: "ROOM_DESIGN_4.png"
     },
     {
-        src: BACKGROUND_PATH + "/bg_xmas.png",
-        alt: "bg_xmas",
-        value: "bg_xmas.png"
+      src: BACKGROUND_PATH + "/ROOM_DESIGN_5.png",
+      alt: "ROOM_DESIGN_5",
+      value: "ROOM_DESIGN_5.png"
     },
 ];
 
-const messageList = [
+const MESSAGES = [
     {
         src: ENVELOPE_PATH + "/envelope1.png",
         alt: "envelope",
@@ -385,35 +368,10 @@ const messageList = [
         src: CAKE_PATH + "/strawberries1.png",
         alt: "cake",
         value: "CAKE"
-    },
-    {
-        src: CHOCOLATE_PATH + "/chocolate1.png",
-        alt: "chocolate",
-        value: "CHOCOLATE"
-    },
-    {
-        src: GIFTBOX_PATH + "/giftbox_1.png",
-        alt: "giftbox",
-        value: "GIFTBOX"
-    },
-    {
-        src: TAFFY_PATH + "/taffy1.png",
-        alt: "taffy",
-        value: "TAFFY"
-    },
+    }
 ];
 
-const presentList = [
-    {
-        src: ENVELOPE_PATH + "/envelope1.png",
-        alt: "envelope",
-        value: "ENVELOPE"
-    },
-    {
-        src: CAKE_PATH + "/strawberries1.png",
-        alt: "cake",
-        value: "CAKE"
-    },
+const PRESENTS = [
     {
         src: CHOCOLATE_PATH + "/chocolate1.png",
         alt: "chocolate",
@@ -422,7 +380,7 @@ const presentList = [
     {
         src: GIFTBOX_PATH + "/giftbox_1.png",
         alt: "giftbox",
-        value: "GIFTBOX"
+        value: "GIFT_BOX"
     },
     {
         src: TAFFY_PATH + "/taffy1.png",

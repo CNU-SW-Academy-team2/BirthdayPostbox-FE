@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Modal } from '../components';
 import { MessageSendForm, Title2, ItemBox } from "../components/domain";
 import PresentSendForm from "../components/domain/PresentSendForm";
 import { ItemEventProvider } from "../context/ItemEventProvider";
+import { BACKGROUND_PATH } from "../configs/assetConfig";
 
 const ICON_RESOURCE_PATH = process.env.PUBLIC_URL + "/icon";
 
@@ -24,16 +25,11 @@ const RoomInfoWrapper = styled.div`
 `;
 
 const DisplayBox = styled.div`
-    display: flex;
     margin: 0 auto;
-    min-height: 600px;
+    min-height: 720px;
     width: 1200px;
-    background-color: white;
-    text-align: center;
     border-radius: 16px;
-    box-sizing: border-box;
     box-shadow: 6.79014px 6.79014px 20.3704px 5.43212px rgba(0, 0, 0, 0.14);
-    justify-content: space-evenly;
 `;
 
 const RoomDate = styled.span`
@@ -59,20 +55,9 @@ const SideBar = styled.div`
             margin-top: 16px;
         }
     }
-`;
 
-const Button = styled.button`
-    display: block;
-    margin: 0 auto;
-    background-color: #1fe0;
-    border: 2px solid #D47DC7;
-    border-radius: 10%;
+    & > span {
 
-    &:hover {
-        cursor: pointer;
-    }
-    &:not(:first-of-type) {
-        margin-top: 40px;
     }
 `;
 
@@ -97,24 +82,68 @@ const ButtonWrapper = styled.div`
         cursor: pointer;
     }
 `;
+
+const Tooltip = styled.span`
+    visibility: hidden;
+    opacity: 0;
+    width: 120px;
+    background-color: rgb(54, 54, 54);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 4px;
+    position: absolute;
+    z-index: 1;
+    transition: opacity 0.1s ease-in;
+    top: -16px;
+
+    &:after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
+`;
+
 export default function GiftRoom() {
     const { roomId } = useParams();
+    const navigate = useNavigate();
+
     const [celebrationVisible, setCelebrationVisible] = useState(false);
     const [messageFormVisible, setMessageFormVisible] = useState(false);
     const [presentFormVisible, setPresentFormVisible] = useState(false);
     const [loading, setLoading] = useState(true);
     
+    const tooltipRef = useRef();
+
     const [roomData, setRoomData] = useState({
         room_name : "",
         room_date : "",
+        room_design: "",
+        message_design_category: "",
+        present_design_category: "",
         messages: [],
-        presents: []
+        presents: [],
     });
 
+    const displayBoxRef = useRef();
+
+    let timer = null;
     const handleCopyAddress = () => {
+        const Tooltip = tooltipRef.current;
         navigator.clipboard.writeText(window.location.href);
-        
-        alert('복사되었습니다!');
+        Tooltip.style.visibility = "visible";
+        Tooltip.style.opacity = 1;
+
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            Tooltip.style.visibility = "hidden";
+            Tooltip.style.opacity = 0;
+        }, 2000);
     }
 
     const showMessageForm = () => {
@@ -149,6 +178,16 @@ export default function GiftRoom() {
     }
 
     useEffect(() => {
+        const beforeLoading = () => {
+            console.log(roomData)
+            if (roomData.room_design) {
+                displayBoxRef.current.style.backgroundImage = `url(${BACKGROUND_PATH}/${roomData.room_design}.png)`;
+            }
+            else {
+                displayBoxRef.current.style.backgroundImage = `url(${BACKGROUND_PATH}/ROOM_DESIGN_1.png)`;
+            }
+        }
+
         const fetchData = async () => {
             try {
                 const res = await axios.get(`/room-content`, {
@@ -159,13 +198,15 @@ export default function GiftRoom() {
 
                 if (res.status === 200) {
                     setRoomData(res.data);
+                    beforeLoading();
                     setLoading(false);
                 }
                 else {
                     throw new Error('방 정보를 불러올 수 없습니다.');
                 }
             } catch (e) {
-                console.error(e);
+                alert("허용되지 않은 링크입니다.");
+                navigate("/");
             }
 
         }
@@ -182,7 +223,7 @@ export default function GiftRoom() {
                         <Title2 />
                         <h2>{!loading && roomData.room_name }<RoomDate>{!loading && calculateDate()}</RoomDate></h2>
                     </RoomInfoWrapper>
-                    <DisplayBox>
+                    <DisplayBox ref={displayBoxRef}>
                         {!loading && (
                         <>
                             <ItemBox 
@@ -191,12 +232,15 @@ export default function GiftRoom() {
                                 style={{ justifyContent: "end" }}
                                 messages={roomData.messages}
                                 presents={roomData.presents}
+                                messageType={roomData.message_design_category}
+                                presentType={roomData.present_design_category}
                             />
                         </>
                         )}
                     </DisplayBox>
                 </ContentContainer>
                 <SideBar>
+                    <Tooltip ref={tooltipRef}>복사되었습니다!</Tooltip>
                     <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ ICON_RESOURCE_PATH + '/Button_CopyLink.png' }/>
                     <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={ ICON_RESOURCE_PATH + '/Button_congrats.png'}/>
                 </SideBar>
@@ -219,10 +263,7 @@ export default function GiftRoom() {
                     height='900px'
                     style={{ display: 'inline-block', backgroundColor: 'linear-gradient(68deg, #FF62B7 14.39%, #9F53FF 79.59%)', borderRadius: '20px', border: '3px solid #C49DE7'}}
                 >
-                    <MessageSendForm onSubmit={(sender) => {
-                        
-                        setMessageFormVisible(false);
-                    }} />
+                    <MessageSendForm onSubmit={() => setMessageFormVisible(false)} />
                 </Modal>
                 <Modal
                     visible={presentFormVisible}
