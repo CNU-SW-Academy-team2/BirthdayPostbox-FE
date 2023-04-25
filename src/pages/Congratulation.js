@@ -142,6 +142,7 @@ export default function Congratulation() {
                                 width={1200}
                                 height={720}
                                 style={{ justifyContent: "end" }}
+                                scale={1}
                                 messages={roomData.messages}
                                 presents={roomData.presents}
                                 onSelectMessage={handleSelectMessage}

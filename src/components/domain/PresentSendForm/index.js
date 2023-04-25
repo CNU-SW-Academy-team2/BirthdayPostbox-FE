@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useContext, useRef, useState } from 'react';
 import { ItemEventContext } from '../../../context/ItemEventProvider';
+import { IDENTIFIERS } from '../../../configs/ItemBoxConstants';
 
 const Container = styled.div`
     padding: 8px 64px;
@@ -92,7 +93,7 @@ export default function PresentSendForm({ onSubmit }) {
     const [sender, setSender] = useState("");
     const contentRef = useRef();
     const uploadImageRef = useRef(null);
-    const { addPresent } = useContext(ItemEventContext);
+    const { addItem } = useContext(ItemEventContext);
     
     const onDropImage = (changedFile) => {
         let reader = new FileReader();
@@ -141,7 +142,7 @@ export default function PresentSendForm({ onSubmit }) {
                     setSender("");
                     contentRef.current.innerHTML = "";
                     onSubmit && onSubmit();
-                    addPresent(sender);
+                    addItem(null, sender, IDENTIFIERS.PRESENT);
                 }
                 else {
                     throw new Error(`메시지 전송 오류 Status ${res.status}`);
