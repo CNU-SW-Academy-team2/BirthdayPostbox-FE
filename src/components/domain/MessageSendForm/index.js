@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useContext, useRef, useState } from 'react';
 import { ItemEventContext } from '../../../context/ItemEventProvider';
+import { IDENTIFIERS } from '../../../configs/ItemBoxConstants';
 
 const SubmitButton = styled.button`
     background-color: #C49DE7;
@@ -80,7 +81,7 @@ export default function MessageSendForm({ onSubmit }) {
     const [sender, setSender] = useState("");
     const contentRef = useRef();
 
-    const { addMessage } = useContext(ItemEventContext);
+    const { addItem } = useContext(ItemEventContext);
 
     const { isLoading, errors, handleChange, handleSubmit, handleChangeCustom } = useForm({
         initialState: {
@@ -107,7 +108,7 @@ export default function MessageSendForm({ onSubmit }) {
                     setSender("");
                     contentRef.current.innerHTML = "";
                     onSubmit && onSubmit(sender);
-                    addMessage(sender);
+                    addItem(null, sender, IDENTIFIERS.MESSAGE);
                 }
                 else {
                     throw new Error(`메시지 전송 오류 Status ${res.status}`);

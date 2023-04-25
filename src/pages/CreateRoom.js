@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { ImageRadioGroup, Title2, ItemBox } from "../components/domain";
 import { ItemEventProvider } from "../context/ItemEventProvider";
-import { BACKGROUND_PATH, CAKE_PATH, CHOCOLATE_PATH, ENVELOPE_PATH, GIFTBOX_PATH, TAFFY_PATH } from "../path";
+import { BACKGROUND_PATH, CAKE_PATH, CHOCOLATE_PATH, ENVELOPE_PATH, GIFTBOX_PATH, TAFFY_PATH } from "../configs/assetConfig";
 
 const PageWrapper = styled.div`
 `;
@@ -19,9 +19,10 @@ const PreviewBackground = styled.div`
 `;
 
 const FormBox = styled.form`
+    display: block;
     position: flex;
-    width: 80%;
-    margin: 0 10%;
+    width: 1600px;
+    margin: 0 auto;
     padding: 8px 16px;
     background-color: white;
     text-align: center;
@@ -109,6 +110,18 @@ const ButtonTheme = createTheme({
   }
 });
 
+const PreviewInfo = styled.div`
+    display: flex;
+    justify-content: left;
+    flex-direction: column;
+    text-align: left;
+    background-color: white;
+    & > * {
+        display: block;
+        flex-basis: 100%;
+        margin-left: 48px;
+    }
+`;
 
 export default function CreateRoom() {
     const navigate = useNavigate();
@@ -138,7 +151,7 @@ export default function CreateRoom() {
 
         const messages = [];
         const presents = [];
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
             messages.push({ message_id: `m${i}`, message_sender: "" });
             presents.push({ present_id: `p${i}`, present_sender: "" });
         }
@@ -202,8 +215,7 @@ export default function CreateRoom() {
     const handleCheckPage1 = () => {
         setErrorMessage({});
         const errors = {};
-        console.log(messageStyle);
-        console.log(presentStyle);
+
         if (!backgroundStyle) errors.backgroundStyle = "배경을 선택해주세요.";
         if (!messageStyle) errors.messageStyle = "메시지을 선택해주세요.";
         if (!presentStyle) errors.presentStyle = "선물을 선택해주세요.";
@@ -278,7 +290,7 @@ export default function CreateRoom() {
                         <StyledTitle>방 디자인 선택하기</StyledTitle>
                         <InputWrapper>
                             <StyledSubTitle>배경 선택</StyledSubTitle>
-                            <ImageRadioGroup list={backgroundList} name="background" onChange={handleChangeBackground} width={200} />
+                            <ImageRadioGroup list={backgroundList} name="background" onChange={handleChangeBackground} />
                             <ErrorMessage>{errorMessage.backgroundStyle}</ErrorMessage>
                         </InputWrapper>
                         <InputWrapper>
@@ -299,18 +311,19 @@ export default function CreateRoom() {
                         <StyledTitle>미리보기</StyledTitle>
                         <div>
                         
-                            <PreviewBackground style={{ backgroundImage: `url(${BACKGROUND_PATH}/${backgroundStyle})`}}>
-                                <Title2 />
-                                <h1>{roomName}</h1>
+                            <PreviewBackground style={{ display: 'block', objectFit: "contain", width: 1080, margin: '0 auto'}}>
+                                <PreviewInfo style={{ display: 'flex', justifyContent: 'left' }}>
+                                    <h1>{roomName}</h1>
+                                </PreviewInfo>
                                 <div>
-                                    <div style={{ width: 800, height: 480, margin: "0 auto" }}>
+                                    <div style={{ width: 1000, height: 600, margin: "0 auto", backgroundImage: `url(${BACKGROUND_PATH}/${backgroundStyle})` }}>
                                         {
                                             page === 2 ? (
                                                 <ItemEventProvider>
                                                     <ItemBox 
-                                                        width={800}
-                                                        height={480}
-                                                        scale={0.7}
+                                                        width={1000}
+                                                        height={600}
+                                                        scale={1}
                                                         style={{ justifyContent: "end" }}
                                                         messages={previewMessages}
                                                         presents={previewPresents}

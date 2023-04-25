@@ -22,3 +22,8 @@ body {
 .userSelectNone {
     user-select: none;
 }
+
+.itemLabel {
+    position: absolute;
+    font-size: 20px;
+}
