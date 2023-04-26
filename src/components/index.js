@@ -10,3 +10,4 @@ export { default as Upload } from './base/Upload';
 export { default as Badge } from './base/Badge';
 export { default as Image } from './base/Image';
 export { default as Input } from './base/Input';
+export { default as Tooltip } from './base/Tooltip';

@@ -17,11 +17,8 @@ const ContentContainer = styled.div`
 `;
 
 const DisplayBox = styled.div`
-    margin: 0 auto;
-    min-height: 720px;
-    width: 1200px;
-    border-radius: 16px;
-    box-shadow: 6.79014px 6.79014px 20.3704px 5.43212px rgba(0, 0, 0, 0.14);
+    width: 100%;
+    height: 100%;
 `;
 
 
@@ -145,71 +142,66 @@ export default function Congratulation() {
 
     return (
         <ItemEventProvider>
-            <PageBackground>
-                <ContentContainer>
-                    <Title2 />
-                    <DisplayBox ref={displayBoxRef}>
-                        {!roomLoading && (
-                        <>
-                            <ItemBox 
-                                width={1200}
-                                height={720}
-                                style={{ justifyContent: "end" }}
-                                scale={1}
-                                messages={roomData.messages}
-                                presents={roomData.presents}
-                                messageType={roomData.message_design_category}
-                                presentType={roomData.present_design_category}
-                                onSelectMessage={handleSelectMessage}
-                                onSelectPresent={handleSelectPresent}
-                            />
-                        </>
-                        )}
-                    </DisplayBox>
-                    <Modal
-                        visible={messageDetailVisible}
-                        onClose={setMessageDetailVisible}
-                    >
-                            {itemDetailsLoading ? (
-                                <div>
-                                    loading중...
-                                </div>
-                            ): (
-                                <div>
-                                    <div>
-                                        messageSender: {messageDetails.message_sender}
-                                    </div>
-                                    <div>
-                                        messageContent: {messageDetails.message_content}
-                                    </div>
-                                </div>
-                            )}
+            <DisplayBox ref={displayBoxRef}>
+                {!roomLoading && (
+                <>
+                    <ItemBox 
+                        width={window.innerWidth}
+                        height={window.innerHeight}
+                        style={{ justifyContent: "end" }}
+                        scale={1}
+                        messages={roomData.messages}
+                        presents={roomData.presents}
+                        messageType={roomData.message_design_category}
+                        presentType={roomData.present_design_category}
+                        onSelectMessage={handleSelectMessage}
+                        onSelectPresent={handleSelectPresent}
+                    />
+                </>
+                )}
+            </DisplayBox>
+            <Modal
+                visible={messageDetailVisible}
+                onClose={setMessageDetailVisible}
+            >
+                    {itemDetailsLoading ? (
+                        <div>
+                            loading중...
+                        </div>
+                    ): (
+                        <div>
+                            <div>
+                                messageSender: {messageDetails.message_sender}
+                            </div>
+                            <div>
+                                messageContent: {messageDetails.message_content}
+                            </div>
+                        </div>
+                    )}
 
-                    </Modal>
-                    <Modal
-                        visible={presentDetailVisible}
-                        onClose={setPresentDetailVisible}
-                    >
-                            {itemDetailsLoading ? (
-                                <div>
-                                    loading중...
-                                </div>
-                            ): (
-                                <div>
-                                    <div>
-                                        presentSender: {presentDetails.present_sender}
-                                    </div>
-                                    <div>
-                                        presentContent: {presentDetails.present_content}
-                                    </div>
-                                    <div>
-                                        presentImgUrl: {presentDetails.present_img_url}
-                                    </div>
-                                </div>
-                            )}
-                    </Modal>
-                </ContentContainer>
-            </PageBackground>
+            </Modal>
+            <Modal
+                visible={presentDetailVisible}
+                onClose={setPresentDetailVisible}
+            >
+                    {itemDetailsLoading ? (
+                        <div>
+                            loading중...
+                        </div>
+                    ): (
+                        <div>
+                            <div>
+                                presentSender: {presentDetails.present_sender}
+                            </div>
+                            <div>
+                                presentContent: {presentDetails.present_content}
+                            </div>
+                            <div>
+                                presentImgUrl: {presentDetails.present_img_url}
+                            </div>
+                        </div>
+                    )}
+            </Modal>
         </ItemEventProvider>
     );
 }

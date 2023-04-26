@@ -14,9 +14,6 @@ const TitleWrapper = styled.div`
     margin: 0;
     text-align: center;
 `;
-const SubTitle = styled.h2`
-    transform: translate(0, -70%);
-`;
 
 const Description = styled.div`
     text-align: center;
@@ -29,23 +26,22 @@ const Description = styled.div`
     flex-direction: column;
 `;
 
-// const DescriptionContent = styled.pre`
-//     left: -10%;
-// `; 
 const LinkWrapper = styled.div`
-    padding: 3rem;
+    margin: 44px;
     font-size: 20px;
     text-align: center;
     text-decoration: none;
-`;
+    height: 200px;
+    width: 200px;
+    border-radius: 20%;
+    padding: 20px;
 
-const LinkStlye = {
-    color: 'black',
-    textDecoration: 'none',
-    '&:hover': {
-        color: 'violet'
+    transition: all 0.2s ease-out;
+    &:hover {
+        transform: scale(99%);
+        background-color: rgba(0, 0, 0, 0.1);
     }
-};
+`;
 
 const StyledTitleText = styled.div`
     font-family: NanumNeoEB;
@@ -56,22 +52,6 @@ const StyledConText = styled.pre`
     font-family: NanumNeoB;
     font-size: 20px;
 `;
-
-const StyledImgBox = styled.div`
-    background-image: url('${process.env.PUBLIC_URL}/icon/box.png');
-    width: 600px;
-    height: 300px;
-    object-fit: contain;
-    position: relative;
-`;
-const StyledTxtBox = styled.div`
-`;
-// const StyledHeader = styled.header`
-//   font-family: NanumNeo;
-//   margin-top: 40px;
-//   font-size: 50px;
-//   color: #736FA0;
-// `;
 
 export default function Main() {
     const descriptionContent = 
@@ -95,17 +75,9 @@ export default function Main() {
             <StyledTitleText>Birthday Postbox : 생일빵의 이용방법은 다음과 같습니다.</StyledTitleText>
             <StyledConText>{descriptionContent}</StyledConText>
         </Description>
-
-{/* 
-        <StyledImgBox>
-            <StyledTxtBox>
-                <DescriptionContent>{descriptionContent}</DescriptionContent>
-            </StyledTxtBox>
-        </StyledImgBox> */}
-        
         
         <LinkWrapper>
-            <Link to="/create" style={LinkStlye}><img  alt="Button" width = '150' height = '200' src={ ICON_RESOURCE_PATH + '/Button_CreateRoom.png' }/></Link>
+            <Link to="/create"><img alt="Button" width = '150' height = '200' src={ ICON_RESOURCE_PATH + '/Button_CreateRoom.png' }/></Link>
         </LinkWrapper>
     </PageContainer>
     );
