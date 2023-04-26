@@ -42,22 +42,27 @@ const SideBar = styled.div`
     position: fixed;
     top: 60%;
     right: 0;
-    min-width: 8%;
-    margin: 1%;
+    min-width: 125px;
+    right: 2%;
 
-    & > img {
-        display: block;
-        margin: 0 auto;
-        cursor: pointer;
-        user-select: none;
-
-        :not(:first-of-type) {
-            margin-top: 16px;
-        }
+    & > * {
+        margin-bottom: 24px;
     }
 
-    & > span {
-
+    & img {
+        display: block;
+        height: 125px;
+        width: 125px;
+        margin: 0 auto;
+        padding: 4px;
+        border-radius: 25%;
+        cursor: pointer;
+        user-select: none;
+        object-fit: contain;
+        
+        :hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
     }
 `;
 
@@ -77,10 +82,15 @@ const WriteMessageButtonStyle = {
 };
 
 const ButtonWrapper = styled.div`
-
+    cursor: pointer;
+        
     &:hover {
-        cursor: pointer;
+        filter: brightness(90%);
     }
+`;
+
+const TooltipWrapper = styled.div`
+    position: relative;
 `;
 
 const Tooltip = styled.span`
@@ -95,7 +105,7 @@ const Tooltip = styled.span`
     position: absolute;
     z-index: 1;
     transition: opacity 0.1s ease-in;
-    top: -16px;
+    top: -25%;
 
     &:after {
         content: "";
@@ -178,8 +188,7 @@ export default function GiftRoom() {
     }
 
     useEffect(() => {
-        const beforeLoading = () => {
-            console.log(roomData)
+        const beforeLoading = (roomData) => {
             if (roomData.room_design) {
                 displayBoxRef.current.style.backgroundImage = `url(${BACKGROUND_PATH}/${roomData.room_design}.png)`;
             }
@@ -198,7 +207,7 @@ export default function GiftRoom() {
 
                 if (res.status === 200) {
                     setRoomData(res.data);
-                    beforeLoading();
+                    beforeLoading(res.data);
                     setLoading(false);
                 }
                 else {
@@ -213,7 +222,7 @@ export default function GiftRoom() {
 
         setLoading(true);
         fetchData();
-    }, [roomId]);
+    }, [roomId, navigate]);
 
     return (
         <ItemEventProvider>
@@ -240,8 +249,10 @@ export default function GiftRoom() {
                     </DisplayBox>
                 </ContentContainer>
                 <SideBar>
-                    <Tooltip ref={tooltipRef}>복사되었습니다!</Tooltip>
-                    <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ ICON_RESOURCE_PATH + '/Button_CopyLink.png' }/>
+                    <TooltipWrapper>
+                        <img  alt="Button" width = '100' height = '125' onClick={() => handleCopyAddress()} src={ ICON_RESOURCE_PATH + '/Button_CopyLink.png' }/>
+                        <Tooltip ref={tooltipRef}>복사되었습니다!</Tooltip>
+                    </TooltipWrapper>
                     <img  alt="Button" width = '125' height = '125' onClick={() => setCelebrationVisible(true)} src={ ICON_RESOURCE_PATH + '/Button_congrats.png'}/>
                 </SideBar>
                 <Modal

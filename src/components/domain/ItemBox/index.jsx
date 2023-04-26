@@ -1,8 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import Matter, { Body, Runner, Engine, Render, Bodies, World, Events } from "matter-js";
 import { ItemEventContext } from "../../../context/ItemEventProvider";
-import { IMAGE_PATH } from "../../../configs/assetConfig";
-import { WALL_THICKNESS, LABEL_DISTANCE_X_DELTA, LABEL_DISTANCE_Y_DELTA, ADDITIONAL_WALL_HEIGHT, RESTITUTION, ANGLE, ANGULARSPEED, FRICTION, FRAME_RATE, IDENTIFIERS } from "../../../configs/ItemBoxConstants";
+import { WALL_THICKNESS, LABEL_DISTANCE_X_DELTA, LABEL_DISTANCE_Y_DELTA, ADDITIONAL_WALL_HEIGHT, FRAME_RATE, IDENTIFIERS } from "../../../configs/ItemBoxConstants";
 
 export default function ItemBox({
     width = 600,
@@ -15,7 +14,7 @@ export default function ItemBox({
     onSelectMessage,
     onSelectPresent,
     messageType = "ENVELOPE",
-    presentType = "GIFTBOX",
+    presentType = "GIFT_BOX",
     ...props
 }) {
     const containerRef = useRef();
@@ -28,9 +27,10 @@ export default function ItemBox({
     useEffect(() => {
         setSize(width, height);
         setScale(scale);
+        
         setMessageType(messageType);
         setPresentType(presentType);
-
+        
         const runner = Runner.create();
         runner.delta = FRAME_RATE;   // frame 설정
 
@@ -50,7 +50,7 @@ export default function ItemBox({
         });
 
         
-        const floor = Bodies.rectangle(width/2, height+WALL_THICKNESS/2, width, WALL_THICKNESS, {
+        const floor = Bodies.rectangle(width/2, height+WALL_THICKNESS/2 - 100 * scale, width, WALL_THICKNESS, {
             id: 10000,
             label: "wall",
             isStatic: true,
@@ -87,7 +87,7 @@ export default function ItemBox({
         })
         
         World.add(engine.world, [floor, leftWall, rightWall, ceiling]);
-
+        
         // 메시지 아이템 생성
         messages.forEach(({ message_id, message_sender = "" }) => {
             addItem(message_id, message_sender, IDENTIFIERS.MESSAGE);
@@ -186,3 +186,4 @@ export default function ItemBox({
         </div>
     )
 }
+

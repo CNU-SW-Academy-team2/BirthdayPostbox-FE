@@ -11,12 +11,9 @@ let width = 1200;
 let height = 720;
 let scale = 1;
 
-let messageType = "ENVELOPE";
-let presentType = "GIFT_BOX";
-
 const ITEM_TYPE = {
-    MESSAGE: messageType,
-    PRESENT: presentType
+    MESSAGE: "ENVELOPE",
+    PRESENT: "GIFT_BOX"
 };
 
 function setEngine(newEngine) {
@@ -29,11 +26,11 @@ function setSize(w, h) {
 }
 
 function setMessageType(type) {
-    messageType = type;
+    ITEM_TYPE.MESSAGE = type;
 }
 
 function setPresentType(type) {
-    presentType = type;
+    ITEM_TYPE.PRESENT = type;
 }
 
 function addGameObject(item, textElement) {
@@ -55,6 +52,9 @@ const attachLabel = (item, text, x) => {
 
 const getImagePath = (type, index) => {
     const { originPath, paths } = IMAGE_PATH[type];
+    if (!originPath) {
+        debugger;
+    } 
     return originPath + paths[index % paths.length];
 }
 
@@ -68,8 +68,12 @@ const getImagePath = (type, index) => {
 function addItem(id, sender, label) {
     if (!id) id = v4();
 
-    const itemType = ITEM_TYPE[label] || "MESSAGE";    // default로 MESSAGE
+    const itemType = ITEM_TYPE[label];
     const randomX = Math.floor(Math.random() * width);
+
+    if (!itemType) {
+        itemType = "MESSAGE";
+    }
 
     const item = Bodies.circle(randomX, 30, 50 * scale, {
         id,
@@ -86,6 +90,7 @@ function addItem(id, sender, label) {
             }
         }
     });
+    
     if (sender) {
         attachLabel(item, sender, randomX);
     }

@@ -34,13 +34,14 @@ const FormBox = styled.form`
 `;
 
 const InputWrapper = styled.div`
+    position: relative;
     margin-top: 30px;
 `;
 
 const Input = styled.input`
     border: 0px;
     border-bottom: 0.5px solid black;
-
+    
     &:focus {
         outline: none;
     }
@@ -64,7 +65,11 @@ const StyledInput = styled.input`
 `;
 
 const ErrorMessage = styled.div`
+    position: absolute;
     color: red;
+    left: 50%;
+    transform: translate(-50%, 0);
+    white-space: nowrap;
 `;
 
 const TitleWrapper = styled.div`
@@ -152,7 +157,7 @@ export default function CreateRoom() {
                         roomEmail: email,
                         roomDesign: backgroundStyle,
                         messageDesignCategory: messageStyle,
-                        presentDesignCategory: presentStyle
+                        presentDesignCategory: presentStyle,
                     }
                 });
 
@@ -299,7 +304,7 @@ export default function CreateRoom() {
                                     <h2>날짜: {date}</h2>
                                 </PreviewInfo>
                                 <div>
-                                    <div style={{ width: 1000, height: 600, margin: "0 auto", backgroundImage: `url(${BACKGROUND_PATH}/${backgroundStyle})` }}>
+                                    <div style={{ width: 1000, height: 600, margin: "0 auto", backgroundImage: `url(${BACKGROUND_PATH}/${backgroundStyle}.png)` }}>
                                         {
                                             page === 2 ? (
                                                 <ItemEventProvider>
@@ -334,27 +339,27 @@ const BACKGROUNDS = [
     {
       src: BACKGROUND_PATH + "/ROOM_DESIGN_1.png",
       alt: "ROOM_DESIGN_1",
-      value: "ROOM_DESIGN_1.png"
+      value: "ROOM_DESIGN_1"
     },
     {
       src: BACKGROUND_PATH + "/ROOM_DESIGN_2.png",
       alt: "ROOM_DESIGN_2",
-      value: "ROOM_DESIGN_2.png"
+      value: "ROOM_DESIGN_2"
     },
     {
       src: BACKGROUND_PATH + "/ROOM_DESIGN_3.png",
       alt: "ROOM_DESIGN_3",
-      value: "ROOM_DESIGN_3.png"
+      value: "ROOM_DESIGN_3"
     },
     {
       src: BACKGROUND_PATH + "/ROOM_DESIGN_4.png",
       alt: "ROOM_DESIGN_4",
-      value: "ROOM_DESIGN_4.png"
+      value: "ROOM_DESIGN_4"
     },
     {
       src: BACKGROUND_PATH + "/ROOM_DESIGN_5.png",
       alt: "ROOM_DESIGN_5",
-      value: "ROOM_DESIGN_5.png"
+      value: "ROOM_DESIGN_5"
     },
 ];
 

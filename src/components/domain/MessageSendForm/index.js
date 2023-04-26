@@ -1,4 +1,4 @@
-import { Header, Spacer, Spinner, Text } from '../..';
+import { Header, Spacer, Spinner, Text, Tooltip } from '../..';
 import styled from '@emotion/styled';
 import useForm from '../../../hooks/useForm';
 import { useParams } from 'react-router-dom';
@@ -151,7 +151,7 @@ export default function MessageSendForm({ onSubmit }) {
                                 style = {{fontFamily : "NanumNeoB"}}
                             />
                             { isLoading ? <Spinner /> : <SubmitButton>제출하기</SubmitButton>}
-                            {errors.content}
+                            <Tooltip>{errors.content}</Tooltip>
                     </form>
                 </FormBox>
             </MessageBox>
