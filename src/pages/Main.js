@@ -37,9 +37,14 @@ const LinkWrapper = styled.div`
     padding: 20px;
 
     transition: all 0.2s ease-out;
+
     &:hover {
         transform: scale(99%);
         background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    & > img {
+        margin: 0 auto;
     }
 `;
 

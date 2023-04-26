@@ -27,3 +27,5 @@ yarn start
 5. React Router DOM v6
 6. Matter.js
 7. mui
+8. DOMPurify
+9. html-react-parser

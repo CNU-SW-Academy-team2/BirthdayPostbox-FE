@@ -6,6 +6,8 @@ import { ItemBox, Title2 } from "../components/domain";
 import { Modal } from "../components";
 import { ItemEventProvider } from "../context/ItemEventProvider";
 import { BACKGROUND_PATH } from "../configs/assetConfig";
+import DOMPurify from "dompurify";
+import ReactHtmlParser from "html-react-parser";
 
 const PageBackground = styled.div`
     width: 100%;
@@ -56,6 +58,10 @@ export default function Congratulation() {
         messages: [],
         presents: [],
     });
+
+    const getSecureContent = (content) => {
+        return ReactHtmlParser(DOMPurify.sanitize(content));
+    }
 
     useEffect(() => {
         const beforeLoading = () => {
@@ -173,8 +179,8 @@ export default function Congratulation() {
                             <div>
                                 messageSender: {messageDetails.message_sender}
                             </div>
-                            <div>
-                                messageContent: {messageDetails.message_content}
+                            <div className="content">
+                                messageContent: {getSecureContent(messageDetails.message_content)}
                             </div>
                         </div>
                     )}
@@ -194,7 +200,7 @@ export default function Congratulation() {
                                 presentSender: {presentDetails.present_sender}
                             </div>
                             <div>
-                                presentContent: {presentDetails.present_content}
+                                presentContent: {getSecureContent(presentDetails.present_content)}
                             </div>
                             <div>
                                 presentImgUrl: {presentDetails.present_img_url}

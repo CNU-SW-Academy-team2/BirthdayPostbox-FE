@@ -9,6 +9,7 @@ import { IDENTIFIERS } from '../../../configs/ItemBoxConstants';
 
 const Container = styled.div`
     padding: 8px 64px;
+    height: 100%;
 `;
 
 const Form = styled.form`
@@ -88,6 +89,12 @@ const IconAnchor = styled.a`
     text-align: center;
 `;
 
+const SpinnerWrapper = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+`;
+
 export default function PresentSendForm({ onSubmit }) {
     const { roomId } = useParams();
     const [sender, setSender] = useState("");
@@ -112,16 +119,18 @@ export default function PresentSendForm({ onSubmit }) {
         onSubmit: async ({ sender, content, image }) => {
             try {
                 // const formData = new FormData();
-                // formData.append('room_id', { roomId });
-                // formData.append('present_sender', sender);
-                // formData.append('present_content', content);
-                // formData.append('present_img_url', image);
+                // formData.append('roomDTO', JSON.stringify({ roomId }));
+                // formData.append('presentSender', sender);
+                // formData.append('presentContent', content);
+                // formData.append('presentImgUrl', image);
+                // formData.append('presentDesign', "GIFT_BOX_1");
 
                 // const res = await axios.post('/new-present', formData, {
                 //     headers: {
                 //         'Content-Type': 'multipart/form-data'
                 //     }
                 // })
+
                 const jsonData = JSON.stringify({
                     roomDTO: {
                         roomId,
@@ -138,10 +147,8 @@ export default function PresentSendForm({ onSubmit }) {
                     }
                 });
 
-                
                 if (res.status === 200) {
                     setSender("");
-                    contentRef.current.innerHTML = "";
                     onSubmit && onSubmit();
                     addItem(null, sender, IDENTIFIERS.PRESENT);
                 }
@@ -165,57 +172,67 @@ export default function PresentSendForm({ onSubmit }) {
 
     return (
         <Container>
-            <Header level={2}>선물 등록하기</Header>
-            <Form onSubmit={handleSubmit}>
-                <Wrapper>
-                    <Upload
-                    droppable
-                    accept="image/*"
-                    onChange={(e) => {onDropImage(e);  handleChangeCustom('image', e);}}
-                    >
-                        { (file, dragging) => 
-                        <UploadBox style={{ borderColor: dragging ? '#1E77CC' : '#559ce0'}}>
-                            {file ? (
-                                    <img
-                                        ref={(ref) => {uploadImageRef.current = ref}}
-                                        alt=""
-                                        style={{
-                                            objectFit: 'contain',
-                                            maxWidth: '298px',
-                                            overflow: 'hidden'
-                                        }}
-                                    />
-                                ) : (
-                                    '사진을 업로드 해주세요!'
-                                )}
-                        </UploadBox>}
-                    </Upload>
-                    <IconAnchor href='https://gift.kakao.com/home' target='_black'>
-                        <Icon alt='카카오톡 링크' src={process.env.PUBLIC_URL + "/icon/kakaotalk.png"} />
-                        <div style={{ display: "inline-block" }}>기프티콘은 어떠세요?</div>
-                    </IconAnchor>
-                </Wrapper>
-                <Wrapper>
-                     <Text block>작성자</Text>
-                    <SenderInput
-                        type='text'
-                        placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
-                        name='sender'
-                        onChange={(e) => {handleChange(e); setSender(e.target.value)}}
-                        value={sender}
-                    />
-                    <Spacer />
-                    <Text block>메시지 남기기</Text>
-                    <TextBox
-                        placeholder="당신의 마음을 표현해주세요!"
-                        contentEditable
-                        onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
-                        ref={contentRef}
-                    />
-                    { isLoading ? <Spinner /> : <SubmitButton>제출하기</SubmitButton>}
-                    {errors.content}
-                </Wrapper>
-            </Form>
+            {
+                isLoading ? (
+                    <SpinnerWrapper>
+                        <Spinner size={50} />
+                    </SpinnerWrapper>
+                ) : (
+                    <div>
+                        <Header level={2}>선물 등록하기</Header>
+                        <Form onSubmit={handleSubmit}>
+                            <Wrapper>
+                                <Upload
+                                droppable
+                                accept="image/*"
+                                onChange={(e) => {onDropImage(e);  handleChangeCustom('image', e);}}
+                                >
+                                    { (file, dragging) => 
+                                    <UploadBox style={{ borderColor: dragging ? '#1E77CC' : '#559ce0'}}>
+                                        {file ? (
+                                                <img
+                                                    ref={(ref) => {uploadImageRef.current = ref}}
+                                                    alt=""
+                                                    style={{
+                                                        objectFit: 'contain',
+                                                        maxWidth: '298px',
+                                                        overflow: 'hidden'
+                                                    }}
+                                                />
+                                            ) : (
+                                                '사진을 업로드 해주세요!'
+                                            )}
+                                    </UploadBox>}
+                                </Upload>
+                                <IconAnchor href='https://gift.kakao.com/home' target='_black'>
+                                    <Icon alt='카카오톡 링크' src={process.env.PUBLIC_URL + "/icon/kakaotalk.png"} />
+                                    <div style={{ display: "inline-block" }}>기프티콘은 어떠세요?</div>
+                                </IconAnchor>
+                            </Wrapper>
+                            <Wrapper>
+                                <Text block>작성자</Text>
+                                <SenderInput
+                                    type='text'
+                                    placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
+                                    name='sender'
+                                    onChange={(e) => {handleChange(e); setSender(e.target.value)}}
+                                    value={sender}
+                                />
+                                <Spacer />
+                                <Text block>메시지 남기기</Text>
+                                <TextBox
+                                    placeholder="당신의 마음을 표현해주세요!"
+                                    contentEditable
+                                    onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
+                                    ref={contentRef}
+                                />
+                                <SubmitButton>제출하기</SubmitButton>
+                            </Wrapper>
+                        </Form>
+                    </div>
+                )
+            }
+
         </Container>
     );
 }
