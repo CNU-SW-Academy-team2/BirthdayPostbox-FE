@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ItemBox, Title2 } from "../components/domain";
-import { Modal } from "../components";
+import { Modal, Spinner } from "../components";
 import { ItemEventProvider } from "../context/ItemEventProvider";
 import { BACKGROUND_PATH } from "../configs/assetConfig";
 import DOMPurify from "dompurify";
@@ -18,11 +18,62 @@ const PageBackground = styled.div`
 const ContentContainer = styled.div`
 `;
 
+const RoomTitle = styled.h1`
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-size: 48px;
+    text-shadow: 0 0 10px white, 0 0 10px white, 0 0 10px white;
+    letter-spacing: 2px;
+    word-spacing: 2px;
+`;
+
 const DisplayBox = styled.div`
     width: 100%;
     height: 100%;
 `;
 
+const MessageContainer = styled.div`
+    height: 100%;
+    width: 480px;
+    margin: auto;
+    border-radius: 20px;
+
+    & > * {
+        margin-top: 16px;
+        display: block;
+    }
+`;
+
+const PresentContainer = styled.div`
+    height: 100%;
+    width: 480px;
+    margin: auto;
+    border-radius: 20px;
+
+    & > * {
+        margin-top: 16px;
+        display: block;
+    }
+`;
+
+const Sender = styled.div`
+    width: 100%;
+    border: 1px solid black;
+    padding: 8px 12px;
+    box-sizing: border-box;
+`;
+
+const Content = styled.div`
+    border: 1px solid black;
+    padding: 12px 12px;
+    height: calc(100% - 80px);
+    box-sizing: border-box;
+`;
+
+const SpinnerWrapper = styled.div`
+    text-align: center;
+`;
 
 export default function Congratulation() {
     const { roomId, ownerCode } = useParams();
@@ -61,7 +112,11 @@ export default function Congratulation() {
 
     const getSecureContent = (content) => {
         return ReactHtmlParser(DOMPurify.sanitize(content));
-    }
+    };
+
+    const handleShow = () => {
+
+    };
 
     useEffect(() => {
         const beforeLoading = () => {
@@ -82,6 +137,7 @@ export default function Congratulation() {
                 });
 
                 if (res.status === 200) {
+                    console.log(res.data);
                     setRoomData(res.data);
                     beforeLoading();
                     setRoomLoading(false);
@@ -148,6 +204,7 @@ export default function Congratulation() {
 
     return (
         <ItemEventProvider>
+            <RoomTitle>{roomData.room_name}</RoomTitle>
             <DisplayBox ref={displayBoxRef}>
                 {!roomLoading && (
                 <>
@@ -169,43 +226,53 @@ export default function Congratulation() {
             <Modal
                 visible={messageDetailVisible}
                 onClose={setMessageDetailVisible}
+                width={720}
+                height={800}
+                style={{
+                    borderRadius: "20px"
+                }}
             >
                     {itemDetailsLoading ? (
-                        <div>
-                            loading중...
-                        </div>
+                        <SpinnerWrapper>
+                            <Spinner size={40} />
+                        </SpinnerWrapper>
                     ): (
-                        <div>
-                            <div>
-                                messageSender: {messageDetails.message_sender}
-                            </div>
-                            <div className="content">
-                                messageContent: {getSecureContent(messageDetails.message_content)}
-                            </div>
-                        </div>
+                        <MessageContainer>
+                            <Sender>
+                                {messageDetails.message_sender}
+                            </Sender>
+                            <Content className="content">
+                                {getSecureContent(messageDetails.message_content)}
+                            </Content>
+                        </MessageContainer>
                     )}
 
             </Modal>
             <Modal
                 visible={presentDetailVisible}
                 onClose={setPresentDetailVisible}
+                width={720}
+                height={800}
+                style={{
+                    borderRadius: "20px"
+                }}
             >
                     {itemDetailsLoading ? (
-                        <div>
-                            loading중...
-                        </div>
+                        <SpinnerWrapper>
+                            <Spinner size={40} />
+                        </SpinnerWrapper>
                     ): (
-                        <div>
+                        <PresentContainer>
+                            <Sender>
+                                {presentDetails.present_sender}
+                            </Sender>
+                            <Content>
+                                {getSecureContent(presentDetails.present_content)}
+                            </Content>
                             <div>
-                                presentSender: {presentDetails.present_sender}
+                                {presentDetails.present_img_url}
                             </div>
-                            <div>
-                                presentContent: {getSecureContent(presentDetails.present_content)}
-                            </div>
-                            <div>
-                                presentImgUrl: {presentDetails.present_img_url}
-                            </div>
-                        </div>
+                        </PresentContainer>
                     )}
             </Modal>
         </ItemEventProvider>

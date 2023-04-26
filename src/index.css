@@ -26,4 +26,6 @@ body {
 .itemLabel {
     position: absolute;
     font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 10px white, 0 0 10px white, 0 0 10px white;
 }
