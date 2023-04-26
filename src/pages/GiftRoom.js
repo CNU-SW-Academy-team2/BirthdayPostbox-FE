@@ -260,11 +260,11 @@ export default function GiftRoom() {
                 onClose={() => setCelebrationVisible(false)}
                 style={{display: 'flex', justifyContent: 'spaceEvenly', borderRadius: '20px', border: '3px solid #C49DE7', minHeight: '600px', minWidth: '1200px'}}
                     >
-                    <ButtonWrapper style={WriteMessageButtonStyle}>
-                        <img  alt="Button" width = '175' height = '200' onClick={() => showMessageForm()} src={ ICON_RESOURCE_PATH + '/Button_message.png' }/>
+                    <ButtonWrapper style={WriteMessageButtonStyle} onClick={() => showMessageForm()} >
+                        <img  alt="Button" width = '175' height = '200' src={ ICON_RESOURCE_PATH + '/Button_message.png' }/>
                     </ButtonWrapper>
-                    <ButtonWrapper style={WriteMessageButtonStyle}>
-                        <img  alt="Button" width = '175' height = '200' onClick={() => showPresentForm()} src={ ICON_RESOURCE_PATH + '/Button_present.png' }/>
+                    <ButtonWrapper style={WriteMessageButtonStyle} onClick={() => showPresentForm()} >
+                        <img  alt="Button" width = '175' height = '200' src={ ICON_RESOURCE_PATH + '/Button_present.png' }/>
                     </ButtonWrapper>
                 </Modal>
                 <Modal
@@ -280,6 +280,7 @@ export default function GiftRoom() {
                     visible={presentFormVisible}
                     onClose={setPresentFormVisible}
                     width='1200px'
+                    height='900px'
                     style={{ backgroundColor: 'RGBA(255,246,246, 1)', borderRadius: '20px', border: '3px solid #C49DE7',}}
                 >
                     <PresentSendForm onSubmit={() => setPresentFormVisible(false)} />

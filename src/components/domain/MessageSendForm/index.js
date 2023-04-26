@@ -1,4 +1,4 @@
-import { Header, Spacer, Spinner, Text, Tooltip } from '../..';
+import { Header, Spacer, Spinner, Text } from '../..';
 import styled from '@emotion/styled';
 import useForm from '../../../hooks/useForm';
 import { useParams } from 'react-router-dom';
@@ -32,9 +32,11 @@ const SenderInput = styled.input`
     margin-top : 20px;
     font-size : 18px;
     text-align : center;
+    background-color: rgba(255, 255, 255, 0.6);
 
     &:focus {
         outline: 1.5px solid #986bc2;
+        background-color: rgba(255, 255, 255, 1);
     }
 `;
 
@@ -48,8 +50,11 @@ const TextBox = styled.div`
     padding : 10px;
     border: 1.5px solid #BD97E0;
     overflow: auto;
+    background-color: rgba(255, 255, 255, 0.6);
+
     &:focus {
         outline: 1.5px solid #986bc2;
+        background-color: rgba(255, 255, 255, 1);
     }
     text-align : center;
  
@@ -61,7 +66,7 @@ const TextBox = styled.div`
 
 const ModalBox = styled.div`
     text-align : center;
-    height: 10px;
+    height: 100%;
 `;
 
 const MessageBox = styled.div`
@@ -74,6 +79,12 @@ const MessageBox = styled.div`
 const FormBox = styled.div`
     flex-direction : column;
     padding: 110px 0 0 0 ;
+`;
+
+const SpinnerWrapper = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
 `;
 
 export default function MessageSendForm({ onSubmit }) {
@@ -107,7 +118,6 @@ export default function MessageSendForm({ onSubmit }) {
 
                 if (res.status === 200) {
                     setSender("");
-                    contentRef.current.innerHTML = "";
                     onSubmit && onSubmit(sender);
                     addItem(null, sender, IDENTIFIERS.MESSAGE);
                 }
@@ -128,33 +138,42 @@ export default function MessageSendForm({ onSubmit }) {
 
     return (
         <ModalBox>
-            <Header level={2} style = {{fontFamily : "NanumNeoB"}}>메시지 작성하기</Header>
-            <MessageBox>
-                <FormBox>
-                    <form onSubmit={handleSubmit}>
-                            <Text style = {{fontFamily : "NanumNeoB", fontSize : "25px"}}>작성자</Text>
-                            <SenderInput
-                                type='text'
-                                placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
-                                name='sender'
-                                onChange={(e) => {handleChange(e); setSender(e.target.value)}}
-                                value={sender}
-                                style = {{fontFamily : "NanumNeoB"}}
-                            />
-                            <Spacer />
-                            <Text block style = {{fontFamily : "NanumNeoB", fontSize : "25px"}}>메시지 남기기</Text>
-                            <TextBox
-                                placeholder="당신의 마음을 표현해주세요!"
-                                contentEditable
-                                onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
-                                ref={contentRef}
-                                style = {{fontFamily : "NanumNeoB"}}
-                            />
-                            { isLoading ? <Spinner /> : <SubmitButton>제출하기</SubmitButton>}
-                            <Tooltip>{errors.content}</Tooltip>
-                    </form>
-                </FormBox>
-            </MessageBox>
+                {
+                isLoading ? (
+                        <SpinnerWrapper>
+                            <Spinner size={50}/>
+                        </SpinnerWrapper>
+                    ) : (
+                        <div>
+                            <Header level={2} style = {{fontFamily : "NanumNeoB"}}>메시지 작성하기</Header>
+                            <MessageBox>
+                                <FormBox>
+                                    <form onSubmit={handleSubmit}>
+                                        <Text style = {{fontFamily : "NanumNeoB", fontSize : "25px"}}>작성자</Text>
+                                        <SenderInput
+                                            type='text'
+                                            placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
+                                            name='sender'
+                                            onChange={(e) => {handleChange(e); setSender(e.target.value)}}
+                                            value={sender}
+                                            style = {{fontFamily : "NanumNeoB"}}
+                                        />
+                                        <Spacer />
+                                        <Text block style = {{fontFamily : "NanumNeoB", fontSize : "25px"}}>메시지 남기기</Text>
+                                        <TextBox
+                                            placeholder="당신의 마음을 표현해주세요!"
+                                            contentEditable
+                                            onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
+                                            ref={contentRef}
+                                            style = {{fontFamily : "NanumNeoB"}}
+                                        />
+                                        <SubmitButton>제출하기</SubmitButton>
+                                    </form>
+                                </FormBox>
+                            </MessageBox>
+                        </div>
+                    )
+                }
         </ModalBox>
     );
 }
