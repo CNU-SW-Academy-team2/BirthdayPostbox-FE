@@ -26,6 +26,7 @@ const RoomTitle = styled.h1`
     text-shadow: 0 0 10px white, 0 0 10px white, 0 0 10px white;
     letter-spacing: 2px;
     word-spacing: 2px;
+    pointer-events: none;
 `;
 
 const DisplayBox = styled.div`
@@ -82,6 +83,9 @@ export default function Congratulation() {
     const [roomLoading, setRoomLoading] = useState(true);
     const [itemDetailsLoading, setItemDetailsLoading] = useState(true);
     const [messageDetailVisible, setMessageDetailVisible] = useState(false);
+    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
     const displayBoxRef = useRef();
 
     const [messageDetails, setMessageDetail] = useState({
@@ -114,9 +118,24 @@ export default function Congratulation() {
         return ReactHtmlParser(DOMPurify.sanitize(content));
     };
 
+
+    
     const handleShow = () => {
 
     };
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+            setWindowHeight(window.innerHeight);
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        }
+    }, [window.innerHeight, window.innerWidth])
 
     useEffect(() => {
         const beforeLoading = () => {
@@ -209,8 +228,8 @@ export default function Congratulation() {
                 {!roomLoading && (
                 <>
                     <ItemBox 
-                        width={window.innerWidth}
-                        height={window.innerHeight}
+                        width={windowWidth}
+                        height={windowHeight}
                         style={{ justifyContent: "end" }}
                         scale={1}
                         messages={roomData.messages}

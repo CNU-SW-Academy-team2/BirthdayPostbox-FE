@@ -119,33 +119,17 @@ export default function PresentSendForm({ onSubmit }) {
         onSubmit: async ({ sender, content, image }) => {
             try {
                 const formData = new FormData();
-                formData.append('roomDTO', JSON.stringify({ roomId }));
+                formData.append('roomDTO.roomId', roomId );
                 formData.append('presentSender', sender);
                 formData.append('presentContent', content);
-                formData.append('presentImgUrl', image);
+                formData.append('image', image);
                 formData.append('presentDesign', "GIFT_BOX_1");
 
                 const res = await axios.post('/new-present', formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        'Content-Type': 'multipart/form-data',
                     }
                 })
-
-                // const jsonData = JSON.stringify({
-                //     roomDTO: {
-                //         roomId,
-                //     },
-                //     presentSender: sender,
-                //     presentContent: content,
-                //     presentImgUrl: "test_img_url",
-                //     presentDesign: "GIFT_BOX_1"
-                // });
-
-                // const res = await axios.post('/new-present', jsonData, {
-                //     headers: {
-                //         "Content-Type": "application/json"
-                //     }
-                // });
 
                 if (res.status === 200) {
                     setSender("");

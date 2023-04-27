@@ -20,7 +20,7 @@ body {
 }
 
 .userSelectNone {
-    user-select: none;
+    pointer-events: none;
 }
 
 .itemLabel {
