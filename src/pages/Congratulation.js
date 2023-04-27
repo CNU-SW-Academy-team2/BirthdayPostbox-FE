@@ -39,6 +39,7 @@ const MessageContainer = styled.div`
     width: 480px;
     margin: auto;
     border-radius: 20px;
+    
 
     & > * {
         margin-top: 16px;
@@ -47,6 +48,7 @@ const MessageContainer = styled.div`
 `;
 
 const PresentContainer = styled.div`
+    display: flex;
     height: 100%;
     width: 480px;
     margin: auto;
@@ -60,16 +62,22 @@ const PresentContainer = styled.div`
 
 const Sender = styled.div`
     width: 100%;
-    border: 1px solid black;
-    padding: 8px 12px;
+    padding: 10px 10px 10px 10px;
     box-sizing: border-box;
+    font-family : NanumNeoB;
+    font-size : 20px;
 `;
 
 const Content = styled.div`
-    border: 1px solid black;
     padding: 12px 12px;
-    height: calc(100% - 80px);
+    height: calc(100% - 100px);
+    width : 400px;
     box-sizing: border-box;
+    border-radius : 20px;
+    border: 4px solid #1E77CC;
+    border-color: #E1DBBC;
+    margin: auto;
+    font-size : 20px;
 `;
 
 const SpinnerWrapper = styled.div`
@@ -82,7 +90,21 @@ const Image = styled.img`
 `;
 
 const ImageWrapper = styled.div`
+    height : 400px;
+    width: 300px;
     display: inline-block;
+    margin : 70px 20px 20px 20px;
+`;
+
+const MessageBox = styled.div`
+    display: inline-block;
+    background-image: url('${process.env.PUBLIC_URL}/message-design/message2.png');
+    background-repeat: no-repeat;
+    background-position: top center;
+    height : 600px;
+    width: 500px;
+    padding-top : 110px;
+    text-align : center;
 `;
 
 
@@ -267,12 +289,14 @@ export default function Congratulation() {
                         </SpinnerWrapper>
                     ): (
                         <MessageContainer>
-                            <Sender>
-                                {messageDetails.message_sender}
-                            </Sender>
-                            <Content className="content">
-                                {getSecureContent(messageDetails.message_content)}
-                            </Content>
+                            <MessageBox>
+                                <Sender>
+                                    FROM {messageDetails.message_sender}
+                                </Sender>
+                                <Content className="content">
+                                    {getSecureContent(messageDetails.message_content)}
+                                </Content>
+                            </MessageBox>
                         </MessageContainer>
                     )}
 
@@ -280,10 +304,11 @@ export default function Congratulation() {
             <Modal
                 visible={presentDetailVisible}
                 onClose={setPresentDetailVisible}
-                width={720}
+                width={1000}
                 height={800}
                 style={{
-                    borderRadius: "20px"
+                    borderRadius: "20px",
+
                 }}
             >
                     {itemDetailsLoading ? (
@@ -292,14 +317,16 @@ export default function Congratulation() {
                         </SpinnerWrapper>
                     ): (
                         <PresentContainer>
-                            <Sender>
-                                {presentDetails.present_sender}
-                            </Sender>
-                            <Content>
-                                {getSecureContent(presentDetails.present_content)}
-                            </Content>
+                            <MessageBox>
+                                <Sender>
+                                    FROM {presentDetails.present_sender}
+                                </Sender>
+                                <Content>
+                                    {getSecureContent(presentDetails.present_content)}
+                                </Content>
+                            </MessageBox>
                             <ImageWrapper>
-                                <Image src={presentDetails.present_img_url} alt="이미지 로딩 오류"/>
+                                    <Image width ="300px" height="600px" src={presentDetails.present_img_url} alt="이미지 로딩 오류"/>
                             </ImageWrapper>
                         </PresentContainer>
                     )}

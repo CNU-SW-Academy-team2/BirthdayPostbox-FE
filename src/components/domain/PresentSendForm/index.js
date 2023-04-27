@@ -18,27 +18,41 @@ const Form = styled.form`
 `;
 
 const Wrapper = styled.div`
-    display: inline-block;
+`;
+
+const MessageBox = styled.div`
+    background-image: url('${process.env.PUBLIC_URL}/message-design/message2.png');
+    background-repeat: no-repeat;
+    background-position: top center;
+    width : 500px;
+    padding : 20px;
+    padding-top : 110px;
+    text-align : center;
 `;
 
 const UploadBox = styled.div`
-    display: inline-block;
     height: 599px;
     width: 400px;
     border: 3px dashed #1E77CC;
     font-size: 24px;
     text-align: center;
+    font-family : NanumNeoB;
+    color : grey;
+    padding-top : 20px;
     justify-content: center;
+    border-color: #BD97E0;
+    background-color : white;
+    border-radius : 20px;
 `;
 
 const TextBox = styled.div`
     width: 400px;
-    height: 580px;
-    padding: 12px 16px;
+    height: 400px;
     border: 1.5px solid #BD97E0;
-    font-size: 16px;
+    font-size: 20px;
+    padding: 8px;
     overflow: auto;
-
+    margin : auto;
     &:focus {
         outline: 1.5px solid #986bc2;
     }
@@ -51,10 +65,12 @@ const TextBox = styled.div`
 const SenderInput = styled.input`
     width: 400px;
     height: 1.5em;
-    padding: 8px 16px;
+    padding: 4px 16px;
+    margin-top : 6px;
     border: 1.5px solid #BD97E0;
-    margin-bottom: 12px;
-    font-size: 14px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align : center;
     &:focus {
         outline: 1.5px solid #986bc2;
     }
@@ -63,8 +79,12 @@ const SenderInput = styled.input`
 const SubmitButton = styled.button`
     background-color: #C49DE7;
     border: none;
-    border-radius: 2px;
-    margin: auto auto;
+    border-radius: 10px;
+    margin-top: 30px;
+    width : 150px;
+    height : 40px;
+    font-size : 20px;
+    font-family : NanumNeoB;
     
     &:hover {
         cursor: pointer;
@@ -83,11 +103,14 @@ const Icon = styled.img`
 const IconAnchor = styled.a`
     display: block;
     color: black;
-    text-decoration: none;
     border: 1px solid black;
-    margin-top: 32px;
+    margin-top: 15px;
     text-align: center;
-`;
+    background-color : white;
+    border-radius : 20px;
+    border: 3px dashed #1E77CC;
+    border-color: #BD97E0;
+    `;
 
 const SpinnerWrapper = styled.div`
     position: absolute;
@@ -163,16 +186,16 @@ export default function PresentSendForm({ onSubmit }) {
                     </SpinnerWrapper>
                 ) : (
                     <div>
-                        <Header level={2}>선물 등록하기</Header>
                         <Form onSubmit={handleSubmit}>
                             <Wrapper>
+                            <Header level={1} style = {{fontFamily : "NanumNeoB"}}>선물 등록하기</Header>
                                 <Upload
                                 droppable
                                 accept="image/*"
                                 onChange={(e) => {onDropImage(e);  handleChangeCustom('image', e);}}
                                 >
                                     { (file, dragging) => 
-                                    <UploadBox style={{ borderColor: dragging ? '#1E77CC' : '#559ce0'}}>
+                                    <UploadBox>
                                         {file ? (
                                                 <img
                                                     ref={(ref) => {uploadImageRef.current = ref}}
@@ -189,29 +212,32 @@ export default function PresentSendForm({ onSubmit }) {
                                     </UploadBox>}
                                 </Upload>
                                 <IconAnchor href='https://gift.kakao.com/home' target='_black'>
-                                    <Icon alt='카카오톡 링크' src={process.env.PUBLIC_URL + "/icon/kakaotalk.png"} />
-                                    <div style={{ display: "inline-block" }}>기프티콘은 어떠세요?</div>
+                                    <img style={{width : '300px', height : '70px', marginTop : '8px'}} alt='카카오톡 링크' src={process.env.PUBLIC_URL + "/icon/kakao_shopping2.png"} />
+                                    <br/>
+                                    <div style={{ display: "inline-block", fontFamily : "NanumNeoB", fontSize : "18px", marginTop : '8px', marginBottom : '8px'}}>기프티콘은 어떠세요?</div>
                                 </IconAnchor>
                             </Wrapper>
-                            <Wrapper>
-                                <Text block>작성자</Text>
-                                <SenderInput
-                                    type='text'
-                                    placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
-                                    name='sender'
-                                    onChange={(e) => {handleChange(e); setSender(e.target.value)}}
-                                    value={sender}
-                                />
-                                <Spacer />
-                                <Text block>메시지 남기기</Text>
-                                <TextBox
-                                    placeholder="당신의 마음을 표현해주세요!"
-                                    contentEditable
-                                    onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
-                                    ref={contentRef}
-                                />
-                                <SubmitButton>제출하기</SubmitButton>
-                            </Wrapper>
+                            <MessageBox>
+                                <Wrapper>
+                                    <Text block style={{fontFamily : "NanumNeoB", fontSize: "25px",marginBottom : "8px"}}>작성자</Text>
+                                    <SenderInput
+                                        type='text'
+                                        placeholder="당신은 누구인가요? 물론 밝히지 않아도 괜찮습니다!"
+                                        name='sender'
+                                        onChange={(e) => {handleChange(e); setSender(e.target.value)}}
+                                        value={sender}
+                                    />
+                                    <Spacer />
+                                    <Text block style={{fontFamily : "NanumNeoB", fontSize: "25px",marginBottom : "20px"}}>메시지 남기기</Text>
+                                    <TextBox
+                                        placeholder="당신의 마음을 표현해주세요!"
+                                        contentEditable
+                                        onInput={(e) => handleChangeCustom('content', e.target.innerHTML)}
+                                        ref={contentRef}
+                                    />
+                                    <SubmitButton>제출하기</SubmitButton>
+                                </Wrapper>
+                            </MessageBox>
                         </Form>
                     </div>
                 )
