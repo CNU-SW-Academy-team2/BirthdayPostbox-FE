@@ -206,6 +206,7 @@ export default function GiftRoom() {
                 });
 
                 if (res.status === 200) {
+                    console.log(res.data);
                     setRoomData(res.data);
                     beforeLoading(res.data);
                     setLoading(false);
