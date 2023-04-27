@@ -76,6 +76,16 @@ const SpinnerWrapper = styled.div`
     text-align: center;
 `;
 
+const Image = styled.img`
+    max-width: 400px;
+    object-fit: contain;
+`;
+
+const ImageWrapper = styled.div`
+    display: inline-block;
+`;
+
+
 export default function Congratulation() {
     const { roomId, ownerCode } = useParams();
     const navigate = useNavigate();
@@ -288,9 +298,9 @@ export default function Congratulation() {
                             <Content>
                                 {getSecureContent(presentDetails.present_content)}
                             </Content>
-                            <div>
-                                {presentDetails.present_img_url}
-                            </div>
+                            <ImageWrapper>
+                                <Image src={presentDetails.present_img_url} alt="이미지 로딩 오류"/>
+                            </ImageWrapper>
                         </PresentContainer>
                     )}
             </Modal>
