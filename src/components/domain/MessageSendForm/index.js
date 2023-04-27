@@ -10,7 +10,7 @@ import { IDENTIFIERS } from '../../../configs/ItemBoxConstants';
 const SubmitButton = styled.button`
     background-color: #C49DE7;
     border: none;
-    border-radius: 2px;
+    border-radius: 10px;
     margin: auto auto;
     width : 150px;
     height : 40px;
