@@ -74,6 +74,7 @@ const ErrorMessage = styled.div`
 
 const TitleWrapper = styled.div`
     padding: 20px;
+    margin-left : 60px;
 `;
 
 const StyledTitle = styled.div`

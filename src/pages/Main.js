@@ -62,13 +62,13 @@ export default function Main() {
     const descriptionContent = 
     `     1. 방 만들기 버튼 클릭
      
-     2. 생일인 사람의 생일, 이메일을 적기
+     2. 축하받을 사람의 생일, 이메일을 적기
      
      3. 생성된 방에서 편지 작성 및 선물 등록하기
 
      4. 다른 친구에게 링크를 공유하기
     
-    생일이 되면 자동으로 메세지 및 선물 확인을 위한 이메일이 전송됩니다.`;
+    당일이 되면 자동으로 메세지 및 선물 확인을 위한 이메일이 전송됩니다.`;
         
     return (
     <PageContainer>
@@ -77,7 +77,7 @@ export default function Main() {
         </TitleWrapper>
 
         <Description>
-            <StyledTitleText>Birthday Postbox : 생일빵의 이용방법은 다음과 같습니다.</StyledTitleText>
+            <StyledTitleText>The Happy Postbox | 이용방법은 다음과 같습니다.</StyledTitleText>
             <StyledConText>{descriptionContent}</StyledConText>
         </Description>
         
