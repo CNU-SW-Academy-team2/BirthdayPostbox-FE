@@ -5,5 +5,5 @@ const Image = styled.img`
 `;
 
 export function Title2() {
-    return <Image alt="MainTitle" width = '350' height = '125' src={process.env.PUBLIC_URL + '/icon/Title2.png'}/>;
+    return <Image alt="MainTitle" width = '470' height = '100' src={process.env.PUBLIC_URL + '/icon/Title2.png'}/>;
 }
